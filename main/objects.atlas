@@ -1,0 +1,15 @@
+images {
+  image: "/main/images/campfire.png"
+}
+images {
+  image: "/main/images/cat.png"
+}
+images {
+  image: "/main/images/waterfall.png"
+}
+images {
+  image: "/main/images/car.png"
+}
+margin: 0
+extrude_borders: 0
+inner_padding: 0
