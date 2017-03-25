@@ -1,7 +1,7 @@
 # OpenAL Extension
 Provides 3D audio, pitch control and other stuff.
 
-# Quick example
+## Quick example
 ```lua
 local res = resource.load("/sounds/sound.wav")
 local pos = go.get_position()
@@ -10,6 +10,10 @@ self.soundSource.x, self.soundSource.y = pos.x, pos.y
 self.soundSource.is_looping = true
 self.soundSource:play()
 ```
+## Setup
+
+Copy "openal" folder to your project. Add WAV files as resources (specify resources directory in `game.project`).
+
 ## Properties
 ### `openal.doppler_factor`
 
