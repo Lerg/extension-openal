@@ -21,14 +21,6 @@
 #ifndef STATIC_HASH_H
 #define STATIC_HASH_H
 
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-
 /*
  *	Static HASH algorithm implementation.
  *
@@ -119,8 +111,6 @@ foreach (string inp in inputdata)
  *	Dictionary collisions contains the list of collisions, inputdata is a string with all the word lists.
  */
 
-
-
 /*
  *	Internal defines, loop unrolling for the static hash macro's.
  */
@@ -130,7 +120,6 @@ foreach (string inp in inputdata)
 #define HASH_INT_16(s,i,x)		HASH_INT_4(s,i,HASH_INT_4(s,i+4,HASH_INT_4(s,i+8,HASH_INT_4(s,i+12,x))))
 #define HASH_INT_64(s,i,x)		HASH_INT_16(s,i,HASH_INT_16(s,i+16,HASH_INT_16(s,i+32,HASH_INT_16(s,i+48,x))))
 #define HASH_INT_256(s,i,x)		HASH_INT_64(s,i,HASH_INT_64(s,i+64,HASH_INT_64(s,i+128,HASH_INT_64(s,i+192,x))))
-
 
 
 /*
@@ -151,12 +140,24 @@ foreach (string inp in inputdata)
 #define HASH_S16(s)				((unsigned int)(HASH_INT_16(s,0,0)^(HASH_INT_16(s,0,0)>>16)))	///< Hash value from string with a max length of 16 bytes.
 
 
+// TODO: Make it work with g++ for android
+/*#define H1(s,i,x)   (x*65599u+(uint8_t)s[(i)<strlen(s)?strlen(s)-1-(i):strlen(s)])
+#define H4(s,i,x)   H1(s,i,H1(s,i+1,H1(s,i+2,H1(s,i+3,x))))
+#define H16(s,i,x)  H4(s,i,H4(s,i+4,H4(s,i+8,H4(s,i+12,x))))
+#define H64(s,i,x)  H16(s,i,H16(s,i+16,H16(s,i+32,H16(s,i+48,x))))
+#define H256(s,i,x) H64(s,i,H64(s,i+64,H64(s,i+128,H64(s,i+192,x))))
 
-/*
- *	Functions.
- */
+#define HASH(s)    ((uint32_t)(H256(s,0,0)^(H256(s,0,0)>>16)))
+#define HASH_S16(s) HASH(s)
+#define HASH_S64(s) HASH(s)
+*/
 
+/*uint64_t constexpr mix(char m, uint64_t s);
+uint64_t constexpr hash_string(const char * m);
 
+#define HASH_S16(s) hash_string(s)
+#define HASH_S64(s) hash_string(s)
+*/
 
 /**
  *	\brief	Hash function
@@ -168,13 +169,5 @@ foreach (string inp in inputdata)
  *	\return	HASH value.
  */
 unsigned int hash_string (const char *String);
-
-
-
-#ifdef __cplusplus
-}
-#endif
-
-
 
 #endif // STATIC_HASH_H

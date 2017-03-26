@@ -50,9 +50,7 @@ void checkTable(lua_State* L, int index) {
 }
 
 void checkBuffer(lua_State* L, int index) {
-	// TODO: isBuffer doesn't work
-	//if (dmScript::IsBuffer(L, index)) {
-	if (lua_type(L, index) != LUA_TUSERDATA) {
+	if (!dmScript::IsBuffer(L, index)) {
 		luaL_error(L, "Wrong type. Buffer expected at %d. Got %s.", index, lua_typename(L, lua_type(L, index)));
 	}
 }

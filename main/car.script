@@ -22,3 +22,7 @@ function update(self, dt)
 	end
 	msg.post("#collisionobject", "apply_force", {force = vmath.vector3(direction * 100, 0, 0), position = go.get_world_position()})
 end
+
+function final(self)
+	openal.remove_source(self.source)
+end

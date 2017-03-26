@@ -20,20 +20,6 @@
  */
 #include "static_hash.h"
 
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-
-/*
- *	Functions.
- */
-
-
-
 /**
  *	\brief	Hash function
  *
@@ -54,8 +40,12 @@ unsigned int hash_string (const char *String)
     return hash ^ (hash >> 16);
 }
 
-
-
-#ifdef __cplusplus
+//C++11
+/*
+uint64_t constexpr mix(char m, uint64_t s) {
+  return ((s<<7) + ~(s>>3)) + ~m;
 }
-#endif
+
+uint64_t constexpr hash_string(const char * m) {
+  return (*m) ? mix(*m,hash_string(m+1)) : 0;
+}*/
