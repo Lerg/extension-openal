@@ -51,7 +51,6 @@ Available models:
 Returns a `Source` object.
 
 Creates a sound source object and loads a WAV file into it. The `Source` object is described below.
-The WAV file must not contain any metadata or it will fail to load (TODO: fix that).
 Only mono WAV files will be positioned. Stereo files will be played as if they are at the listener's position.
 
 ### `openal.remove_source(source)`
