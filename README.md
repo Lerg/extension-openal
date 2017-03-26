@@ -10,6 +10,7 @@ self.soundSource.x, self.soundSource.y = pos.x, pos.y
 self.soundSource.is_looping = true
 self.soundSource:play()
 ```
+Video demonstration: https://www.youtube.com/watch?v=5vgHMGr8cpw
 ## Setup
 
 Copy "openal" folder to your project. Add WAV files as resources (specify resources directory in `game.project`).
