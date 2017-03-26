@@ -18,7 +18,7 @@ Copy "openal" folder to your project. Add WAV files as resources (specify resour
 ## Properties
 ### `openal.doppler_factor`
 
-Float, positive. Adjusts the Doppler effect. Higher value makes the effect more noticable.
+Float, positive. Adjusts the Doppler effect. Higher value makes the effect more noticeable.
 
 ### `openal.speed_of_sound`
 
