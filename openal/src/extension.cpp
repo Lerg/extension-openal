@@ -13,7 +13,7 @@
 #include "LuaSource.h"
 
 static int extension_init(lua_State* L) {
-	//dmLogInfo("AL_VERSION: %s, AL_RENDERER: %s.", alGetString(AL_VERSION), alGetString(AL_RENDERER));
+	dmLogInfo("AL_VERSION: %s, AL_RENDERER: %s.", alGetString(AL_VERSION), alGetString(AL_RENDERER));
 	return 1;
 }
 

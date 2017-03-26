@@ -1,6 +1,5 @@
 #include "LuaSource.h"
 
-// TODO: change initialization
 LuaSource::LuaSource(ALuint source)
 	: source(source),
 	x(0), y(0), z(0),

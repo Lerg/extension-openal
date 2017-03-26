@@ -4,9 +4,10 @@
  * The RIFF data is the meta data information that holds,
  * the ID, size and format of the wave file
  */
+
 struct RIFF_Header {
 	char chunkID[4];
-	long chunkSize;//size not including chunkSize or chunkID
+	unsigned int chunkSize; //size not including chunkSize or chunkID
 	char format[4];
 };
 
@@ -15,11 +16,11 @@ struct RIFF_Header {
  */
 struct WAVE_Format {
 	char subChunkID[4];
-	long subChunkSize;
+	unsigned int subChunkSize;
 	short audioFormat;
 	short numChannels;
-	long sampleRate;
-	long byteRate;
+	unsigned int sampleRate;
+	unsigned int byteRate;
 	short blockAlign;
 	short bitsPerSample;
 };
@@ -29,13 +30,12 @@ struct WAVE_Format {
 */
 struct WAVE_Data {
 	char subChunkID[4]; //should contain the word data
-	long subChunk2Size; //Stores the size of the data block
+	unsigned int subChunk2Size; //Stores the size of the data block
 };
 
 /*
  * Load wave file function. No need for ALUT with this
  */
- // TODO: Make it work for WAV files with metadata.
 static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	uint8_t* sourcedata = 0;
 	uint32_t datasize = 0;
@@ -47,8 +47,19 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	WAVE_Data wave_data;
 	unsigned char* data;
 
+	int cursor = 0;
 	// Read in the first chunk into the struct
-	memcpy(&riff_header, sourcedata, sizeof(RIFF_Header));
+	int field_size = sizeof(riff_header.chunkID);
+	memcpy(&riff_header.chunkID, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(riff_header.chunkSize);
+	memcpy(&riff_header.chunkSize, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(riff_header.format);
+	memcpy(&riff_header.format, &sourcedata[cursor], field_size);
+	cursor += field_size;
 
 	//check for RIFF and WAVE tag in memeory
 	if ((strncmp(riff_header.chunkID, "RIFF", 4) != 0) && (strncmp(riff_header.chunkID, "WAVE", 4) != 0)) {
@@ -57,8 +68,37 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	}
 
 	//Read in the 2nd chunk for the wave info
-	uint8_t* cursor = sourcedata + sizeof(RIFF_Header);
-	memcpy(&wave_format, cursor, sizeof(WAVE_Format));
+	field_size = sizeof(wave_format.subChunkID);
+	memcpy(&wave_format.subChunkID, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.subChunkSize);
+	memcpy(&wave_format.subChunkSize, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.audioFormat);
+	memcpy(&wave_format.audioFormat, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.numChannels);
+	memcpy(&wave_format.numChannels, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.sampleRate);
+	memcpy(&wave_format.sampleRate, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.byteRate);
+	memcpy(&wave_format.byteRate, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.blockAlign);
+	memcpy(&wave_format.blockAlign, &sourcedata[cursor], field_size);
+	cursor += field_size;
+
+	field_size = sizeof(wave_format.bitsPerSample);
+	memcpy(&wave_format.bitsPerSample, &sourcedata[cursor], field_size);
+	cursor += field_size;
 
 	//check for fmt tag in memory
 	if (strncmp(wave_format.subChunkID, "fmt ", 4) != 0) {
@@ -66,28 +106,37 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 		return 0;
 	}
 
-	int extraSize = 0;
 	//check for extra parameters;
 	if (wave_format.subChunkSize > 16) {
-		extraSize = sizeof(short);
+		cursor += sizeof(short);
 	}
 
-	//Read in the the last byte of data before the sound file
-	cursor += sizeof(WAVE_Format) + extraSize;
-	memcpy(&wave_data, cursor, sizeof(WAVE_Data));
+	// Skip all additional chunks until data chunk is found
+	bool data_found = false;
+	do {
+		//Read in the the last byte of data before the sound file
+		field_size = sizeof(wave_data.subChunkID);
+		memcpy(&wave_data.subChunkID, &sourcedata[cursor], field_size);
+		cursor += field_size;
 
-	//check for data tag in memory
-	if (strncmp(wave_data.subChunkID, "data", 4) != 0) {
-		dmLogError("Invalid fmt header");
-		return 0;
-	}
+		field_size = sizeof(wave_data.subChunk2Size);
+		memcpy(&wave_data.subChunk2Size, &sourcedata[cursor], field_size);
+		cursor += field_size;
+
+		//check for data tag in memory
+		if (strncmp(wave_data.subChunkID, "data", 4) == 0) {
+			data_found = true;
+		} else if (cursor >= datasize - sizeof(wave_data)) {
+			dmLogError("Invalid data header");
+			return 0;
+		}
+	} while (!data_found);
 
 	//Allocate memory for data
 	data = new unsigned char[wave_data.subChunk2Size];
 
 	// Read in the sound data into the soundData variable
-	cursor += sizeof(WAVE_Data);
-	memcpy(data, cursor, wave_data.subChunk2Size);
+	memcpy(data, &sourcedata[cursor], wave_data.subChunk2Size);
 
 	//Now we set the variables that we passed in with the
 	//data from the structs
