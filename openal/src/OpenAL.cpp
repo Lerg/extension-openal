@@ -17,12 +17,12 @@ struct RIFF_Header {
 struct WAVE_Format {
 	char subChunkID[4];
 	unsigned int subChunkSize;
-	short audioFormat;
-	short numChannels;
+	unsigned short audioFormat;
+	unsigned short numChannels;
 	unsigned int sampleRate;
 	unsigned int byteRate;
-	short blockAlign;
-	short bitsPerSample;
+	unsigned short blockAlign;
+	unsigned short bitsPerSample;
 };
 
 /*
@@ -169,9 +169,9 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 
 	/* Check if an error occured, and clean up if so. */
 	ALenum err = alGetError();
-	if(err != AL_NO_ERROR) {
+	if (err != AL_NO_ERROR) {
 		dmLogError("OpenAL Error: %s\n", alGetString(err));
-		if(alIsBuffer(buffer)) {
+		if (alIsBuffer(buffer)) {
 			alDeleteBuffers(1, &buffer);
 		}
 		return 0;
@@ -191,7 +191,7 @@ enum WaveType {
 static void ApplySin(ALfloat *data, ALdouble g, ALuint srate, ALuint freq) {
 	ALdouble smps_per_cycle = (ALdouble)srate / freq;
 	ALuint i;
-	for(i = 0;i < srate;i++) {
+	for (i = 0;i < srate;i++) {
 		data[i] += (ALfloat)(sin(i/smps_per_cycle * 2.0*M_PI) * g);
 	}
 }
@@ -202,31 +202,35 @@ static void ApplySin(ALfloat *data, ALdouble g, ALuint srate, ALuint freq) {
  // TODO: expose creating synths
 static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 	ALint data_size;
-	ALfloat *data;
+	ALfloat* data;
 	ALuint buffer;
 	ALenum err;
 	ALuint i;
 
 	data_size = srate * sizeof(ALfloat);
-	data = (ALfloat *)calloc(1, data_size);
-	if(type == WT_Sine)
+	data = (ALfloat*)calloc(1, data_size);
+	if (type == WT_Sine) {
 		ApplySin(data, 1.0, srate, freq);
-	else if(type == WT_Square)
-		for(i = 1;freq*i < srate/2;i+=2)
+	} else if (type == WT_Square) {
+		for (i = 1;freq*i < srate/2;i+=2) {
 			ApplySin(data, 4.0/M_PI * 1.0/i, srate, freq*i);
-	else if(type == WT_Sawtooth)
-		for(i = 1;freq*i < srate/2;i++)
+		}
+	} else if (type == WT_Sawtooth) {
+		for (i = 1;freq*i < srate/2;i++) {
 			ApplySin(data, 2.0/M_PI * ((i&1)*2 - 1.0) / i, srate, freq*i);
-	else if(type == WT_Triangle)
-		for(i = 1;freq*i < srate/2;i+=2)
+		}
+	} else if (type == WT_Triangle) {
+		for (i = 1;freq*i < srate/2;i+=2) {
 			ApplySin(data, 8.0/(M_PI*M_PI) * (1.0 - (i&2)) / (i*i), srate, freq*i);
-	else if(type == WT_Impulse) {
+		}
+	} else if (type == WT_Impulse) {
 		/* NOTE: Impulse isn't really a waveform, but it can still be useful to
 		 * test (other than resampling, the ALSOFT_DEFAULT_REVERB environment
 		 * variable can prove useful here to test the reverb response).
 		 */
-		for(i = 0;i < srate;i++)
+		for (i = 0;i < srate;i++) {
 			data[i] = (i%(srate/freq)) ? 0.0f : 1.0f;
+		}
 	}
 
 	/* Buffer the audio data into a new buffer object. */
@@ -237,9 +241,9 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 
 	/* Check if an error occured, and clean up if so. */
 	err = alGetError();
-	if(err != AL_NO_ERROR) {
+	if (err != AL_NO_ERROR) {
 		fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
-		if(alIsBuffer(buffer)) {
+		if (alIsBuffer(buffer)) {
 			alDeleteBuffers(1, &buffer);
 		}
 		return 0;
