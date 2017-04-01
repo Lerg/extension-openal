@@ -19,40 +19,40 @@ int LuaListener::index(lua_State* L) {
 
 	const char* key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
-		case HASH_S16("x"):
+		case HASH_x:
 			lua_pushnumber(L, luaListener->x);
 			break;
-		case HASH_S16("y"):
+		case HASH_y:
 			lua_pushnumber(L, luaListener->y);
 			break;
-		case HASH_S16("z"):
+		case HASH_z:
 			lua_pushnumber(L, luaListener->z);
 			break;
-		case HASH_S16("vx"):
+		case HASH_vx:
 			lua_pushnumber(L, luaListener->vx);
 			break;
-		case HASH_S16("vy"):
+		case HASH_vy:
 			lua_pushnumber(L, luaListener->vy);
 			break;
-		case HASH_S16("vz"):
+		case HASH_vz:
 			lua_pushnumber(L, luaListener->vz);
 			break;
-		case HASH_S16("orientation_at_x"):
+		case HASH_orientation_at_x:
 			lua_pushnumber(L, luaListener->atx);
 			break;
-		case HASH_S16("orientation_at_y"):
+		case HASH_orientation_at_y:
 			lua_pushnumber(L, luaListener->aty);
 			break;
-		case HASH_S16("orientation_at_z"):
+		case HASH_orientation_at_z:
 			lua_pushnumber(L, luaListener->atz);
 			break;
-		case HASH_S16("orientation_up_x"):
+		case HASH_orientation_up_x:
 			lua_pushnumber(L, luaListener->upx);
 			break;
-		case HASH_S16("orientation_up_y"):
+		case HASH_orientation_up_y:
 			lua_pushnumber(L, luaListener->upy);
 			break;
-		case HASH_S16("orientation_up_z"):
+		case HASH_orientation_up_z:
 			lua_pushnumber(L, luaListener->upz);
 			break;
 	}
@@ -65,65 +65,65 @@ int LuaListener::newindex(lua_State* L) {
 	const char* key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
-		case HASH_S16("x"):
+		case HASH_x:
 			checkNumber(L, valueIndex);
 			luaListener->x = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerPosition(luaListener->x, luaListener->y, luaListener->z);
 			break;
-		case HASH_S16("y"):
+		case HASH_y:
 			checkNumber(L, valueIndex);
 			luaListener->y = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerPosition(luaListener->x, luaListener->y, luaListener->z);
 			break;
-		case HASH_S16("z"):
+		case HASH_z:
 			checkNumber(L, valueIndex);
 			luaListener->z = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerPosition(luaListener->x, luaListener->y, luaListener->z);
 			break;
 
-		case HASH_S16("vx"):
+		case HASH_vx:
 			checkNumber(L, valueIndex);
 			luaListener->vx = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerVelocity(luaListener->vx, luaListener->vy, luaListener->vz);
 			break;
-		case HASH_S16("vy"):
+		case HASH_vy:
 			checkNumber(L, valueIndex);
 			luaListener->vy = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerVelocity(luaListener->vx, luaListener->vy, luaListener->vz);
 			break;
-		case HASH_S16("vz"):
+		case HASH_vz:
 			checkNumber(L, valueIndex);
 			luaListener->vz = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerVelocity(luaListener->vx, luaListener->vy, luaListener->vz);
 			break;
 
-		case HASH_S16("orientation_at_x"):
+		case HASH_orientation_at_x:
 			checkNumber(L, valueIndex);
 			luaListener->atx = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);
 			break;
-		case HASH_S16("orientation_at_y"):
+		case HASH_orientation_at_y:
 			checkNumber(L, valueIndex);
 			luaListener->aty = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);
 			break;
-		case HASH_S16("orientation_at_z"):
+		case HASH_orientation_at_z:
 			checkNumber(L, valueIndex);
 			luaListener->atz = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);
 			break;
 
-		case HASH_S16("orientation_up_x"):
+		case HASH_orientation_up_x:
 			checkNumber(L, valueIndex);
 			luaListener->upx = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);
 			break;
-		case HASH_S16("orientation_up_y"):
+		case HASH_orientation_up_y:
 			checkNumber(L, valueIndex);
 			luaListener->upy = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);
 			break;
-		case HASH_S16("orientation_up_z"):
+		case HASH_orientation_up_z:
 			checkNumber(L, valueIndex);
 			luaListener->upz = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setListenerOrientation(luaListener->atx, luaListener->aty, luaListener->atz, luaListener->upx, luaListener->upy, luaListener->upz);

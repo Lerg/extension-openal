@@ -69,10 +69,10 @@ static int extension_remove_source(lua_State* L) {
 int extension_index(lua_State* L) {
 	const char* key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
-		case HASH_S16("doppler_factor"):
+		case HASH_doppler_factor:
 			lua_pushnumber(L, OpenAL::getInstance()->getDopplerFactor());
 			break;
-		case HASH_S16("speed_of_sound"):
+		case HASH_speed_of_sound:
 			lua_pushnumber(L, OpenAL::getInstance()->getSpeedOfSound());
 			break;
 	}
@@ -83,7 +83,7 @@ int extension_newindex(lua_State* L) {
 	const char* key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
-		case HASH_S16("doppler_factor"): {
+		case HASH_doppler_factor: {
 			checkNumber(L, valueIndex);
 			float value = lua_tonumber(L, valueIndex);
 			if (value > 0) {
@@ -91,7 +91,7 @@ int extension_newindex(lua_State* L) {
 			}
 			break;
 		}
-		case HASH_S16("speed_of_sound"): {
+		case HASH_speed_of_sound: {
 			checkNumber(L, valueIndex);
 			float value = lua_tonumber(L, valueIndex);
 			if (value > 0) {

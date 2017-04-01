@@ -266,25 +266,25 @@ OpenAL* OpenAL::getInstance(void) {
 
 void OpenAL::setDistanceModel(const char* model) {
 	switch (hash_string(model)) {
-		case HASH_S16("inverse"):
+		case HASH_inverse:
 			alDistanceModel(AL_INVERSE_DISTANCE);
 			break;
-		case HASH_S16("inverse clamped"):
+		case HASH_inverse_clamped:
 			alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 			break;
-		case HASH_S16("linear"):
+		case HASH_linear:
 			alDistanceModel(AL_LINEAR_DISTANCE);
 			break;
-		case HASH_S16("linear clamped"):
+		case HASH_linear_clamped:
 			alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 			break;
-		case HASH_S16("exponent"):
+		case HASH_exponent:
 			alDistanceModel(AL_EXPONENT_DISTANCE);
 			break;
-		case HASH_S16("exponent clamped"):
+		case HASH_exponent_clamped:
 			alDistanceModel(AL_EXPONENT_DISTANCE_CLAMPED);
 			break;
-		case HASH_S16("none"):
+		case HASH_none:
 			alDistanceModel(AL_NONE);
 			break;
 	}

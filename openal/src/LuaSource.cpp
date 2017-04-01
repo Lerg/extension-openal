@@ -17,79 +17,79 @@ int LuaSource::index(lua_State* L) {
 
 	const char* key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
-		case HASH_S16("x"):
+		case HASH_x:
 			lua_pushnumber(L, luaSource->x);
 			break;
-		case HASH_S16("y"):
+		case HASH_y:
 			lua_pushnumber(L, luaSource->y);
 			break;
-		case HASH_S16("z"):
+		case HASH_z:
 			lua_pushnumber(L, luaSource->z);
 			break;
 
-		case HASH_S16("vx"):
+		case HASH_vx:
 			lua_pushnumber(L, luaSource->vx);
 			break;
-		case HASH_S16("vy"):
+		case HASH_vy:
 			lua_pushnumber(L, luaSource->vy);
 			break;
-		case HASH_S16("vz"):
+		case HASH_vz:
 			lua_pushnumber(L, luaSource->vz);
 			break;
 
-		case HASH_S16("dx"):
+		case HASH_dx:
 			lua_pushnumber(L, luaSource->dx);
 			break;
-		case HASH_S16("dy"):
+		case HASH_dy:
 			lua_pushnumber(L, luaSource->dy);
 			break;
-		case HASH_S16("dz"):
+		case HASH_dz:
 			lua_pushnumber(L, luaSource->dz);
 			break;
 
-		case HASH_S16("pitch"):
+		case HASH_pitch:
 			lua_pushnumber(L, luaSource->pitch);
 			break;
-		case HASH_S16("gain"):
+		case HASH_gain:
 			lua_pushnumber(L, luaSource->gain);
 			break;
-		case HASH_S16("max_distance"):
+		case HASH_max_distance:
 			lua_pushnumber(L, luaSource->max_distance);
 			break;
-		case HASH_S16("rolloff_factor"):
+		case HASH_rolloff_factor:
 			lua_pushnumber(L, luaSource->rolloff_factor);
 			break;
-		case HASH_S64("reference_distance"):
+		case HASH_reference_distance:
 			lua_pushnumber(L, luaSource->reference_distance);
 			break;
-		case HASH_S16("min_gain"):
+		case HASH_min_gain:
 			lua_pushnumber(L, luaSource->min_gain);
 			break;
-		case HASH_S16("max_gain"):
+		case HASH_max_gain:
 			lua_pushnumber(L, luaSource->max_gain);
 			break;
 
-		case HASH_S16("cone_outer_gain"):
+		case HASH_cone_outer_gain:
 			lua_pushnumber(L, luaSource->cone_outer_gain);
 			break;
-		case HASH_S16("cone_inner_angle"):
+		case HASH_cone_inner_angle:
 			lua_pushnumber(L, luaSource->cone_inner_angle);
 			break;
-		case HASH_S16("cone_outer_angle"):
+		case HASH_cone_outer_angle:
 			lua_pushnumber(L, luaSource->cone_outer_angle);
 			break;
 
-		case HASH_S16("is_looping"):
+		case HASH_is_looping:
 			lua_pushboolean(L, luaSource->is_looping);
 			break;
-		case HASH_S16("is_relative"):
+		case HASH_is_relative:
 			lua_pushboolean(L, luaSource->is_relative);
 			break;
 
-		case HASH_S16("state"):
+		case HASH_state:
 			lua_pushstring(L, OpenAL::getInstance()->getSourceState(luaSource->source));
 			break;
-		case HASH_S16("time"):
+		case HASH_time:
 			lua_pushnumber(L, OpenAL::getInstance()->getSourceTime(luaSource->source));
 			break;
 	}
@@ -104,118 +104,118 @@ int LuaSource::newindex(lua_State* L) {
 	const char* key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
-		case HASH_S16("x"):
+		case HASH_x:
 			checkNumber(L, valueIndex);
 			luaSource->x = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourcePosition(luaSource->source, luaSource->x, luaSource->y, luaSource->z);
 			break;
-		case HASH_S16("y"):
+		case HASH_y:
 			checkNumber(L, valueIndex);
 			luaSource->y = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourcePosition(luaSource->source, luaSource->x, luaSource->y, luaSource->z);
 			break;
-		case HASH_S16("z"):
+		case HASH_z:
 			checkNumber(L, valueIndex);
 			luaSource->z = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourcePosition(luaSource->source, luaSource->x, luaSource->y, luaSource->z);
 			break;
 
-		case HASH_S16("vx"):
+		case HASH_vx:
 			checkNumber(L, valueIndex);
 			luaSource->vx = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceVelocity(luaSource->source, luaSource->vx, luaSource->vy, luaSource->vz);
 			break;
-		case HASH_S16("vy"):
+		case HASH_vy:
 			checkNumber(L, valueIndex);
 			luaSource->vy = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceVelocity(luaSource->source, luaSource->vx, luaSource->vy, luaSource->vz);
 			break;
-		case HASH_S16("vz"):
+		case HASH_vz:
 			checkNumber(L, valueIndex);
 			luaSource->vz = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceVelocity(luaSource->source, luaSource->vx, luaSource->vy, luaSource->vz);
 			break;
 
-		case HASH_S16("dx"):
+		case HASH_dx:
 			checkNumber(L, valueIndex);
 			luaSource->dx = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceDirection(luaSource->source, luaSource->dx, luaSource->dy, luaSource->dz);
 			break;
-		case HASH_S16("dy"):
+		case HASH_dy:
 			checkNumber(L, valueIndex);
 			luaSource->dy = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceDirection(luaSource->source, luaSource->dx, luaSource->dy, luaSource->dz);
 			break;
-		case HASH_S16("dz"):
+		case HASH_dz:
 			checkNumber(L, valueIndex);
 			luaSource->dz = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceDirection(luaSource->source, luaSource->dx, luaSource->dy, luaSource->dz);
 			break;
 
-		case HASH_S16("pitch"):
+		case HASH_pitch:
 			checkNumber(L, valueIndex);
 			luaSource->pitch = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourcePitch(luaSource->source, luaSource->pitch);
 			break;
-		case HASH_S16("gain"):
+		case HASH_gain:
 			checkNumber(L, valueIndex);
 			luaSource->gain = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceGain(luaSource->source, luaSource->gain);
 			break;
-		case HASH_S16("max_distance"):
+		case HASH_max_distance:
 			checkNumber(L, valueIndex);
 			luaSource->max_distance = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceMaxDistance(luaSource->source, luaSource->max_distance);
 			break;
-		case HASH_S16("rolloff_factor"):
+		case HASH_rolloff_factor:
 			checkNumber(L, valueIndex);
 			luaSource->rolloff_factor = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceRolloffFactor(luaSource->source, luaSource->rolloff_factor);
 			break;
-		case HASH_S16("reference_distance"):
+		case HASH_reference_distance:
 			checkNumber(L, valueIndex);
 			luaSource->reference_distance = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceReferenceDistance(luaSource->source, luaSource->reference_distance);
 			break;
-		case HASH_S16("min_gain"):
+		case HASH_min_gain:
 			checkNumber(L, valueIndex);
 			luaSource->min_gain = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceMinGain(luaSource->source, luaSource->min_gain);
 			break;
-		case HASH_S16("max_gain"):
+		case HASH_max_gain:
 			checkNumber(L, valueIndex);
 			luaSource->max_gain = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceMaxGain(luaSource->source, luaSource->max_gain);
 			break;
 
-		case HASH_S16("cone_outer_gain"):
+		case HASH_cone_outer_gain:
 			checkNumber(L, valueIndex);
 			luaSource->cone_outer_gain = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceConeOuterGain(luaSource->source, luaSource->cone_outer_gain);
 			break;
-		case HASH_S16("cone_inner_angle"):
+		case HASH_cone_inner_angle:
 			checkNumber(L, valueIndex);
 			luaSource->cone_inner_angle = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceConeInnerAngle(luaSource->source, luaSource->cone_inner_angle);
 			break;
-		case HASH_S16("cone_outer_angle"):
+		case HASH_cone_outer_angle:
 			checkNumber(L, valueIndex);
 			luaSource->cone_outer_angle = lua_tonumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceConeOuterAngle(luaSource->source, luaSource->cone_outer_angle);
 			break;
 
-		case HASH_S16("is_looping"):
+		case HASH_is_looping:
 			checkBoolean(L, valueIndex);
 			luaSource->is_looping = lua_toboolean(L, valueIndex);
 			OpenAL::getInstance()->setSourceLooping(luaSource->source, luaSource->is_looping);
 			break;
-		case HASH_S16("is_relative"):
+		case HASH_is_relative:
 			checkBoolean(L, valueIndex);
 			luaSource->is_relative = lua_toboolean(L, valueIndex);
 			OpenAL::getInstance()->setSourceRelative(luaSource->source, luaSource->is_relative);
 			break;
 
-		case HASH_S16("time"):
+		case HASH_time:
 			checkNumber(L, valueIndex);
 			OpenAL::getInstance()->setSourceTime(luaSource->source, lua_tonumber(L, valueIndex));
 			break;

@@ -37,11 +37,11 @@ Sets a distance model by which all sound attenuation is calculated.
 
 Available models:
 - `"inverse"`
-- `"inverse clamped"`
+- `"inverse_clamped"`
 - `"linear"`
-- `"linear clamped"`
+- `"linear_clamped"`
 - `"exponent"`
-- `"exponent clamped"`
+- `"exponent_clamped"`
 - `"none"`
 
 ### `openal.new_source(resource)`
