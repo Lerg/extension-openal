@@ -1,7 +1,7 @@
 #include "LuaSource.h"
 
-LuaSource::LuaSource(ALuint source)
-	: source(source),
+LuaSource::LuaSource(ALuint source) :
+	source(source),
 	x(0), y(0), z(0),
 	vx(0), vy(0), vz(0),
 	pitch(1),

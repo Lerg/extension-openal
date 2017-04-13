@@ -13,7 +13,9 @@
 #include "LuaSource.h"
 
 static int extension_init(lua_State* L) {
-	dmLogInfo("AL_VERSION: %s, AL_RENDERER: %s.", alGetString(AL_VERSION), alGetString(AL_RENDERER));
+	bool result = OpenAL::getInstance()->init();
+	dmLogInfo("OpenAL: AL_VERSION: %s, AL_RENDERER: %s.", alGetString(AL_VERSION), alGetString(AL_RENDERER));
+	lua_pushboolean(L, result);
 	return 1;
 }
 
@@ -49,6 +51,11 @@ static int extension_new_source(lua_State* L) {
 
 static int extension_remove_source(lua_State* L) {
 	checkArgCount(L, 1);
+	// Ignore nil sources, might not be created at all.
+	if (lua_isnil(L, 1)) {
+		dmLogInfo("Attempt to remove nil sound source.\n");
+		return 0;
+	}
 	checkTable(L, 1);
 
 	lua_getfield(L, 1, "__userdata");
@@ -146,8 +153,19 @@ dmExtension::Result AppFinalizeOpenAL(dmExtension::AppParams* params) {
 	return dmExtension::RESULT_OK;
 }
 
+void OnEventOpenAL(dmExtension::Params* params, const dmExtension::Event* event) {
+	switch (event->m_Event) {
+		case dmExtension::EVENT_ID_ACTIVATEAPP:
+			OpenAL::getInstance()->resume();
+			break;
+		case dmExtension::EVENT_ID_DEACTIVATEAPP:
+			OpenAL::getInstance()->suspend();
+			break;
+	}
+}
+
 dmExtension::Result FinalizeOpenAL(dmExtension::Params* params) {
 	return dmExtension::RESULT_OK;
 }
 
-DM_DECLARE_EXTENSION(openal, LIB_NAME, AppInitializeOpenAL, AppFinalizeOpenAL, InitializeOpenAL, 0, 0, FinalizeOpenAL)
+DM_DECLARE_EXTENSION(openal, LIB_NAME, AppInitializeOpenAL, AppFinalizeOpenAL, InitializeOpenAL, 0, OnEventOpenAL, FinalizeOpenAL)

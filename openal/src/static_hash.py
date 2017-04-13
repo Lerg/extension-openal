@@ -23,7 +23,7 @@ def string_hash(string):
 def generateEnum():
 	enum = ['enum HASH_STRINGS {']
 	for string in strings:
-		enum.append('\tHASH_' + string + ' = ' + string_hash(string) + ',')
+		enum.append('\tHASH_' + string + ' = ' + string_hash(string) + 'u,')
 	last_line = enum[len(enum) - 1]
 	enum[len(enum) - 1] = last_line[:-1]
 	enum.append('};')

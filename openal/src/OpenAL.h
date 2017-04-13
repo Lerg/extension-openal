@@ -4,7 +4,8 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
-#include <map>
+#include <vector>
+#include <algorithm>
 
 #include "AL/al.h"
 #include "AL/alc.h"
@@ -26,13 +27,18 @@ private:
 	OpenAL(OpenAL const&);
 	void operator=(OpenAL const&);
 	static OpenAL* instance;
-	std::map <ALuint, ALuint> buffers;
+	bool is_initialized;
+	bool is_suspended;
+	ALCdevice* device;
+	ALCcontext* context;
+	std::vector<ALuint> sources, suspended_sources;
 public:
-	static OpenAL* getInstance(void);
+	static OpenAL* getInstance();
+	bool init();
 	void setDistanceModel(const char* model);
-	float getDopplerFactor(void);
+	float getDopplerFactor();
 	void setDopplerFactor(float dopplerFactor);
-	float getSpeedOfSound(void);
+	float getSpeedOfSound();
 	void setSpeedOfSound(float speed);
 	void setListenerPosition(float x, float y, float z);
 	void setListenerVelocity(float x, float y, float z);
@@ -62,7 +68,9 @@ public:
 	void rewindSource(ALuint source);
 	void stopSource(ALuint source);
 	void removeSource(ALuint source);
-	void close(void);
+	void suspend();
+	void resume();
+	void close();
 };
 
 #endif

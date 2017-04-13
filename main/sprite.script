@@ -1,4 +1,6 @@
 function init(self)
+	openal.init()
+
 	openal.speed_of_sound = 3300;
 	print("creating sources")
 	
@@ -6,25 +8,31 @@ function init(self)
 	local res = resource.load("/sounds/campfire.wav")
 	local pos = go.get("campfire", "position")
 	self.campfireSource = openal.new_source(res)
-	self.campfireSource.x, self.campfireSource.y = pos.x, pos.y
-	self.campfireSource.is_looping = true
-	self.campfireSource:play()
+	if self.campfireSource then
+		self.campfireSource.x, self.campfireSource.y = pos.x, pos.y
+		self.campfireSource.is_looping = true
+		self.campfireSource:play()
+	end
 	
 	print("loading cat")
 	res = resource.load("/sounds/cat.wav")
 	pos = go.get("cat", "position")
 	self.catSource = openal.new_source(res)
-	self.catSource.x, self.catSource.y = pos.x, pos.y
-	self.catSource.is_looping = true
-	self.catSource:play()
+	if self.catSource then
+		self.catSource.x, self.catSource.y = pos.x, pos.y
+		self.catSource.is_looping = true
+		self.catSource:play()
+	end
 	
 	print("loading waterfall")
 	res = resource.load("/sounds/waterfall.wav")
 	pos = go.get("waterfall", "position")
 	self.waterfallSource = openal.new_source(res)
-	self.waterfallSource.x, self.waterfallSource.y = pos.x, pos.y
-	self.waterfallSource.is_looping = true
-	self.waterfallSource:play()
+	if self.waterfallSource then
+		self.waterfallSource.x, self.waterfallSource.y = pos.x, pos.y
+		self.waterfallSource.is_looping = true
+		self.waterfallSource:play()
+	end
 	
 	msg.post(".", "acquire_input_focus")
 end

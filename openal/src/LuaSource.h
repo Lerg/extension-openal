@@ -33,6 +33,7 @@ private:
 	static int pause(lua_State* L);
 	static int rewind(lua_State* L);
 	static int stop(lua_State* L);
+
 public:
 	LuaSource(ALuint source);
 	void push(lua_State* L);

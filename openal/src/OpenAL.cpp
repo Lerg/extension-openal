@@ -242,7 +242,7 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 	/* Check if an error occured, and clean up if so. */
 	err = alGetError();
 	if (err != AL_NO_ERROR) {
-		fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+		dmLogError("OpenAL Error: %s\n", alGetString(err));
 		if (alIsBuffer(buffer)) {
 			alDeleteBuffers(1, &buffer);
 		}
@@ -254,14 +254,39 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 
 OpenAL* OpenAL::instance = NULL;
 
-OpenAL::OpenAL() {
+OpenAL::OpenAL() :
+	is_initialized(false),
+	is_suspended(false) {
+	sources.reserve(128);
+	suspended_sources.reserve(128);
 }
 
-OpenAL* OpenAL::getInstance(void) {
+OpenAL* OpenAL::getInstance() {
 	if (!instance) {
 		instance = new OpenAL();
 	}
 	return instance;
+}
+
+bool OpenAL::init() {
+	if (!is_initialized) {
+		// Init only on Android
+		#ifdef __ANDROID__
+			device = alcOpenDevice(NULL);
+			if (!device) {
+				dmLogError("Failed to open audio device.\n");
+				return 1;
+			}
+			context = alcCreateContext(device, NULL);
+			alcMakeContextCurrent(context);
+			if (!context) {
+				dmLogError("Failed to make audio context.\n");
+				return false;
+			}
+		#endif
+		is_initialized = true;
+	}
+	return true;
 }
 
 void OpenAL::setDistanceModel(const char* model) {
@@ -290,7 +315,7 @@ void OpenAL::setDistanceModel(const char* model) {
 	}
 }
 
-float OpenAL::getDopplerFactor(void) {
+float OpenAL::getDopplerFactor() {
 	return alGetFloat(AL_DOPPLER_FACTOR);
 }
 
@@ -298,7 +323,7 @@ void OpenAL::setDopplerFactor(float dopplerFactor) {
 	alDopplerFactor(dopplerFactor);
 }
 
-float OpenAL::getSpeedOfSound(void) {
+float OpenAL::getSpeedOfSound() {
 	return alGetFloat(AL_SPEED_OF_SOUND);
 }
 
@@ -330,7 +355,7 @@ ALuint OpenAL::newSource(dmBuffer::HBuffer* sourceBuffer) {
 	ALuint source = 0;
 	alGenSources(1, &source);
 	alSourcei(source, AL_BUFFER, buffer);
-	buffers[source] = buffer;
+	sources.push_back(source);
 	if (alGetError() == AL_NO_ERROR) {
 		alSource3f(source, AL_POSITION, 0., 0., 0.);
 		alSource3f(source, AL_VELOCITY, 0., 0., 0.);
@@ -455,16 +480,61 @@ void OpenAL::stopSource(ALuint source) {
 }
 
 void OpenAL::removeSource(ALuint source) {
-	ALuint buffer = buffers[source];
+	ALint buffer;
+	alGetSourcei(source, AL_BUFFER, &buffer);
 	alDeleteSources(1, &source);
-	alDeleteBuffers(1, &buffer);
-	buffers.erase(source);
+	ALuint buffer_u = (ALuint)buffer;
+	alDeleteBuffers(1, &buffer_u);
+
+	std::vector<ALuint>::iterator it = std::find(sources.begin(), sources.end(), source);
+	if (it != sources.end()) {
+		std::swap(*it, sources.back());
+		sources.pop_back();
+	}
 }
 
-void OpenAL::close(void) {
-	for (std::map<ALuint, ALuint>::iterator i = buffers.begin(); i != buffers.end(); ++i) {
-		alDeleteSources(1, &i->first);
-		alDeleteBuffers(1, &i->second);
+void OpenAL::suspend() {
+	#ifdef __ANDROID__
+		if (!is_suspended) {
+			for (std::vector<ALuint>::iterator i = sources.begin(); i != sources.end(); ++i) {
+				ALenum state = 0;
+				alGetSourcei(*i, AL_SOURCE_STATE, &state);
+				if (state == AL_PLAYING) {
+					alSourcePause(*i);
+					suspended_sources.push_back(*i);
+				}
+			}
+			is_suspended = true;
+		}
+	#endif
+}
+
+void OpenAL::resume() {
+	#ifdef __ANDROID__
+		if (is_suspended) {
+			for (std::vector<ALuint>::iterator i = suspended_sources.begin(); i != suspended_sources.end(); ++i) {
+				alSourcePlay(*i);
+			}
+			suspended_sources.clear();
+			is_suspended = false;
+		}
+	#endif
+}
+
+void OpenAL::close() {
+	for (std::vector<ALuint>::iterator i = sources.begin(); i != sources.end(); ++i) {
+		ALint buffer;
+		alGetSourcei(*i, AL_BUFFER, &buffer);
+		alDeleteSources(1, &*i);
+		ALuint buffer_u = (ALuint)buffer;
+		alDeleteBuffers(1, &buffer_u);
 	}
-	buffers.clear();
+	sources.clear();
+	if (is_initialized) {
+		#ifdef __ANDROID__
+			alcMakeContextCurrent(NULL);
+			alcDestroyContext(context);
+			alcCloseDevice(device);
+		#endif
+	}
 }
