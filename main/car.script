@@ -2,8 +2,7 @@ local max_speed = 500
 local direction = 1
 
 function init(self)
-	openal.init()
-	
+	print("loading car")
     local res = resource.load("/sounds/car.wav")
 	local pos = go.get_position()
 	self.source = openal.new_source(res)

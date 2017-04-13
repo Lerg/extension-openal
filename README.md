@@ -29,10 +29,15 @@ Float, positive. Get or set the speed of sound.
 Table. The `Listener` object. Described below.
 
 ## Functions
-### `openal.init()`
+### `openal.get_info()`
 
-Initializes audio subsystem. It has effect only on Android, on other platforms Defold itself manages initialization.
-Call this function before using the extension.
+Returns a table with information on OpenAL implementation.
+
+Fields:
+- `vendor`
+- `version`
+- `renderer`
+- `extensions`
 
 ### `openal.set_distance_model(distance_model)`
 

@@ -1,5 +1,10 @@
 function init(self)
-	openal.init()
+	local info = openal.get_info()
+	print("OpenAL info:")
+	print("Vendor:", info.vendor)
+	print("Version:", info.version)
+	print("Renderer:", info.renderer)
+	print("Extensions:", info.extensions)
 
 	openal.speed_of_sound = 3300;
 	print("creating sources")

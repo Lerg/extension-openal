@@ -12,20 +12,27 @@
 #include "LuaListener.h"
 #include "LuaSource.h"
 
-static int extension_init(lua_State* L) {
-	bool result = OpenAL::getInstance()->init();
-	dmLogInfo("OpenAL: AL_VERSION: %s, AL_RENDERER: %s.", alGetString(AL_VERSION), alGetString(AL_RENDERER));
-	lua_pushboolean(L, result);
+static int extension_get_info(lua_State* L) {
+	const char* al_vendor = alGetString(AL_VENDOR);
+	const char* al_version = alGetString(AL_VERSION);
+	const char* al_renderer = alGetString(AL_RENDERER);
+	const char* al_extensions = alGetString(AL_EXTENSIONS);
+
+	lua_createtable(L, 0, 4);
+
+	lua_pushstring(L, al_vendor);
+    lua_setfield(L, -2, "vendor");
+
+	lua_pushstring(L, al_version);
+    lua_setfield(L, -2, "version");
+
+	lua_pushstring(L, al_renderer);
+    lua_setfield(L, -2, "renderer");
+
+	lua_pushstring(L, al_extensions);
+    lua_setfield(L, -2, "extensions");
+
 	return 1;
-}
-
-static int extension_update(lua_State* L) {
-	return 0;
-}
-
-static int extension_final(lua_State* L) {
-	OpenAL::getInstance()->close();
-	return 0;
 }
 
 static int extension_set_distance_model(lua_State* L) {
@@ -111,9 +118,7 @@ int extension_newindex(lua_State* L) {
 }
 
 static const luaL_reg Module_methods[] = {
-	{"init", extension_init},
-	{"update", extension_update},
-	{"final", extension_final},
+	{"get_info", extension_get_info},
 	{"set_distance_model", extension_set_distance_model},
 	{"new_source", extension_new_source},
 	{"remove_source", extension_remove_source},
@@ -146,7 +151,8 @@ dmExtension::Result AppInitializeOpenAL(dmExtension::AppParams* params) {
 
 dmExtension::Result InitializeOpenAL(dmExtension::Params* params) {
 	LuaInit(params->m_L);
-	return dmExtension::RESULT_OK;
+	bool result = OpenAL::getInstance()->init();
+	return result ? dmExtension::RESULT_OK : dmExtension::RESULT_INIT_ERROR;
 }
 
 dmExtension::Result AppFinalizeOpenAL(dmExtension::AppParams* params) {
@@ -165,6 +171,7 @@ void OnEventOpenAL(dmExtension::Params* params, const dmExtension::Event* event)
 }
 
 dmExtension::Result FinalizeOpenAL(dmExtension::Params* params) {
+	OpenAL::getInstance()->close();
 	return dmExtension::RESULT_OK;
 }
 
