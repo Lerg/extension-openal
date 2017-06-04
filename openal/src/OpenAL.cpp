@@ -1,4 +1,7 @@
 #include "OpenAL.h"
+#ifdef __EMSCRIPTEN__
+	#include "compatibility.h"
+#endif
 /*
  * Struct that holds the RIFF data of the Wave file.
  * The RIFF data is the meta data information that holds,
@@ -63,7 +66,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 
 	//check for RIFF and WAVE tag in memeory
 	if ((strncmp(riff_header.chunkID, "RIFF", 4) != 0) && (strncmp(riff_header.chunkID, "WAVE", 4) != 0)) {
-		dmLogError("Invalid RIFF or WAVE header");
+		dmLogError("Invalid WAV RIFF or WAVE header\n");
 		return 0;
 	}
 
@@ -102,7 +105,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 
 	//check for fmt tag in memory
 	if (strncmp(wave_format.subChunkID, "fmt ", 4) != 0) {
-		dmLogError("Invalid fmt header");
+		dmLogError("Invalid WAV fmt header.\n");
 		return 0;
 	}
 
@@ -127,7 +130,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 		if (strncmp(wave_data.subChunkID, "data", 4) == 0) {
 			data_found = true;
 		} else if (cursor >= datasize - sizeof(wave_data)) {
-			dmLogError("Invalid data header");
+			dmLogError("Invalid WAV data header.\n");
 			return 0;
 		}
 	} while (!data_found);
@@ -161,6 +164,10 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	//create our openAL buffer and check for success
 	ALuint buffer = 0;
 	alGenBuffers(1, &buffer);
+	ALenum err = alGetError();
+	if (err != AL_NO_ERROR) {
+		dmLogError("OpenAL Error: %s\n", alGetString(err));
+	}
 
 	//now we put our data into the openAL buffer and
 	//check for success
@@ -168,7 +175,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	delete data;
 
 	/* Check if an error occured, and clean up if so. */
-	ALenum err = alGetError();
+	err = alGetError();
 	if (err != AL_NO_ERROR) {
 		dmLogError("OpenAL Error: %s\n", alGetString(err));
 		if (alIsBuffer(buffer)) {
@@ -255,6 +262,7 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 OpenAL* OpenAL::instance = NULL;
 
 OpenAL::OpenAL() :
+	is_initializable(SHOULD_INITIALIZE_OPENAL),
 	is_initialized(false),
 	is_suspended(false) {
 	sources.reserve(128);
@@ -269,21 +277,18 @@ OpenAL* OpenAL::getInstance() {
 }
 
 bool OpenAL::init() {
-	if (!is_initialized) {
-		// Init only on Android
-		#ifdef __ANDROID__
-			device = alcOpenDevice(NULL);
-			if (!device) {
-				dmLogError("Failed to open audio device.\n");
-				return 1;
-			}
-			context = alcCreateContext(device, NULL);
-			alcMakeContextCurrent(context);
-			if (!context) {
-				dmLogError("Failed to make audio context.\n");
-				return false;
-			}
-		#endif
+	if (!is_initialized && is_initializable) {
+		device = alcOpenDevice(NULL);
+		if (!device) {
+			dmLogError("Failed to open audio device.\n");
+			return 1;
+		}
+		context = alcCreateContext(device, NULL);
+		alcMakeContextCurrent(context);
+		if (!context) {
+			dmLogError("Failed to make audio context.\n");
+			return false;
+		}
 		is_initialized = true;
 	}
 	return true;
@@ -345,21 +350,23 @@ void OpenAL::setListenerOrientation(float atx, float aty, float atz, float upx, 
 }
 
 ALuint OpenAL::newSource(dmBuffer::HBuffer* sourceBuffer) {
-	/* Load the sound into a buffer. */
+	// Load the sound into a buffer.
 	ALuint buffer = loadWavFile(sourceBuffer);
 	if (buffer == 0) {
 		return 0;
 	}
 
-	/* Create the source to play the sound with. */
+	// Create the source to play the sound with.
 	ALuint source = 0;
 	alGenSources(1, &source);
+	alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE); // Positioned audio by default.
 	alSourcei(source, AL_BUFFER, buffer);
 	sources.push_back(source);
 	if (alGetError() == AL_NO_ERROR) {
 		alSource3f(source, AL_POSITION, 0., 0., 0.);
 		alSource3f(source, AL_VELOCITY, 0., 0., 0.);
 		alSourcef(source, AL_REFERENCE_DISTANCE, 50.);
+		alSourcef(source, AL_MAX_DISTANCE, 1000.);
 	}
 	return source;
 }
@@ -369,8 +376,13 @@ void OpenAL::getSourceDefaults(ALuint source, float* gain, float* max_distance, 
 	alGetSourcef(source, AL_MAX_DISTANCE, max_distance);
 	alGetSourcef(source, AL_ROLLOFF_FACTOR, rolloff_factor);
 	alGetSourcef(source, AL_REFERENCE_DISTANCE, reference_distance);
-	alGetSourcef(source, AL_MIN_GAIN, min_gain);
-	alGetSourcef(source, AL_MAX_GAIN, max_gain);
+	#ifndef __EMSCRIPTEN__
+		alGetSourcef(source, AL_MIN_GAIN, min_gain);
+		alGetSourcef(source, AL_MAX_GAIN, max_gain);
+	#else
+		*min_gain = 0.f;
+		*max_gain = 1.f;
+	#endif
 	alGetSourcef(source, AL_CONE_OUTER_GAIN, cone_outer_gain);
 	alGetSourcef(source, AL_CONE_INNER_ANGLE, cone_inner_angle);
 	alGetSourcef(source, AL_CONE_OUTER_ANGLE, cone_outer_angle);
@@ -494,31 +506,27 @@ void OpenAL::removeSource(ALuint source) {
 }
 
 void OpenAL::suspend() {
-	#ifdef __ANDROID__
-		if (!is_suspended) {
-			for (std::vector<ALuint>::iterator i = sources.begin(); i != sources.end(); ++i) {
-				ALenum state = 0;
-				alGetSourcei(*i, AL_SOURCE_STATE, &state);
-				if (state == AL_PLAYING) {
-					alSourcePause(*i);
-					suspended_sources.push_back(*i);
-				}
+	if (!is_suspended && is_initializable) {
+		for (std::vector<ALuint>::iterator i = sources.begin(); i != sources.end(); ++i) {
+			ALenum state = 0;
+			alGetSourcei(*i, AL_SOURCE_STATE, &state);
+			if (state == AL_PLAYING) {
+				alSourcePause(*i);
+				suspended_sources.push_back(*i);
 			}
-			is_suspended = true;
 		}
-	#endif
+		is_suspended = true;
+	}
 }
 
 void OpenAL::resume() {
-	#ifdef __ANDROID__
-		if (is_suspended) {
-			for (std::vector<ALuint>::iterator i = suspended_sources.begin(); i != suspended_sources.end(); ++i) {
-				alSourcePlay(*i);
-			}
-			suspended_sources.clear();
-			is_suspended = false;
+	if (is_suspended) {
+		for (std::vector<ALuint>::iterator i = suspended_sources.begin(); i != suspended_sources.end(); ++i) {
+			alSourcePlay(*i);
 		}
-	#endif
+		suspended_sources.clear();
+		is_suspended = false;
+	}
 }
 
 void OpenAL::close() {
@@ -531,10 +539,8 @@ void OpenAL::close() {
 	}
 	sources.clear();
 	if (is_initialized) {
-		#ifdef __ANDROID__
-			alcMakeContextCurrent(NULL);
-			alcDestroyContext(context);
-			alcCloseDevice(device);
-		#endif
+		alcMakeContextCurrent(NULL);
+		alcDestroyContext(context);
+		alcCloseDevice(device);
 	}
 }

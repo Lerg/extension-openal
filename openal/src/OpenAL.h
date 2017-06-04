@@ -21,6 +21,13 @@
 #include "LuaUtils.h"
 #include "static_hash.h"
 
+// Init only on Android and HTML5
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+	#define SHOULD_INITIALIZE_OPENAL true
+#else
+	#define SHOULD_INITIALIZE_OPENAL false
+#endif
+
 class OpenAL {
 private:
 	OpenAL();
@@ -28,6 +35,7 @@ private:
 	OpenAL(OpenAL const&);
 	void operator=(OpenAL const&);
 	static OpenAL* instance;
+	bool is_initializable;
 	bool is_initialized;
 	bool is_suspended;
 	ALCdevice* device;
