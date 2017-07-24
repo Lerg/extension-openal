@@ -3,7 +3,12 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+
+#if defined(DM_PLATFORM_WINDOWS)
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
 
 #define LIB_NAME "openal"
 #define MODULE_NAME LIB_NAME
