@@ -13,7 +13,11 @@ self.soundSource:play()
 Video demonstration: https://www.youtube.com/watch?v=5vgHMGr8cpw
 ## Setup
 
-Copy "openal" folder to your project. Add WAV files as resources (specify resources directory in `game.project`).
+Add OpenAL as a [Defold library dependency](http://www.defold.com/manuals/libraries/). Open `game.project` and in the dependencies field (in the project section) add:
+
+https://github.com/Lerg/extension-openal/archive/master.zip
+
+Add WAV files as resources (specify resources directory in `game.project`).
 
 ## Properties
 ### `openal.doppler_factor`
