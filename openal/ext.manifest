@@ -1,1 +1,21 @@
 name: "openal"
+
+platforms:
+    x86_64-osx:
+        context:
+            flags:      ["-std=c++11"]
+    x86_64-linux:
+        context:
+            flags:      ["-std=c++11"]
+    x86-win32:
+        context:
+            flags:      ["-std=c++11"]
+    x86_64-win32:
+        context:
+            flags:      ["-std=c++11"]
+    js-web:
+        context:
+            flags:      ["-std=c++11"]
+    wasm-web:
+        context:
+            flags:      ["-std=c++11"]

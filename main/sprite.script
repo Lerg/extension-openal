@@ -68,29 +68,29 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-    if action_id == hash("left") then
-    	if action.pressed then
-    		self.moveLeft = true
-    	elseif action.released then
-    		self.moveLeft = false
-    	end
-    elseif action_id == hash("right") then
-        if action.pressed then
-    		self.moveRight = true
-    	elseif action.released then
-    		self.moveRight = false
-    	end
-    elseif action_id == hash("down") then
-        if action.pressed then
-    		self.moveDown = true
-    	elseif action.released then
-    		self.moveDown = false
-    	end
-    elseif action_id == hash("up") then
-        if action.pressed then
-    		self.moveUp = true
-    	elseif action.released then
-    		self.moveUp = false
-    	end
-    end
+	if action_id == hash("left") then
+		if action.pressed then
+			self.moveLeft = true
+		elseif action.released then
+			self.moveLeft = false
+		end
+	elseif action_id == hash("right") then
+		if action.pressed then
+			self.moveRight = true
+		elseif action.released then
+			self.moveRight = false
+		end
+	elseif action_id == hash("down") then
+		if action.pressed then
+			self.moveDown = true
+		elseif action.released then
+			self.moveDown = false
+		end
+	elseif action_id == hash("up") then
+		if action.pressed then
+			self.moveUp = true
+		elseif action.released then
+			self.moveUp = false
+		end
+	end
 end

@@ -1,4 +1,4 @@
-enum HASH_STRINGS {
+enum HASH_STRINGS : unsigned int {
 	HASH_is_relative = 2458842863u,
 	HASH_doppler_factor = 58565629u,
 	HASH_inverse_clamped = 3743825805u,

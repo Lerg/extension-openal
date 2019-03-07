@@ -2,6 +2,14 @@
 #ifdef __EMSCRIPTEN__
 	#include "compatibility.h"
 #endif
+
+void check_error(const char *log) {
+	ALenum error = alGetError();
+	if (error != AL_NO_ERROR) {
+		dmLogError("OpenAL Error: %s - %s.", log, alGetString(error));
+	}
+}
+
 /*
  * Struct that holds the RIFF data of the Wave file.
  * The RIFF data is the meta data information that holds,
@@ -66,7 +74,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 
 	//check for RIFF and WAVE tag in memeory
 	if ((strncmp(riff_header.chunkID, "RIFF", 4) != 0) && (strncmp(riff_header.chunkID, "WAVE", 4) != 0)) {
-		dmLogError("Invalid WAV RIFF or WAVE header\n");
+		dmLogError("Invalid WAV RIFF or WAVE header");
 		return 0;
 	}
 
@@ -130,7 +138,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 		if (strncmp(wave_data.subChunkID, "data", 4) == 0) {
 			data_found = true;
 		} else if (cursor >= datasize - sizeof(wave_data)) {
-			dmLogError("Invalid WAV data header.\n");
+			dmLogError("Invalid WAV data header.");
 			return 0;
 		}
 	} while (!data_found);
@@ -166,7 +174,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	alGenBuffers(1, &buffer);
 	ALenum err = alGetError();
 	if (err != AL_NO_ERROR) {
-		dmLogError("OpenAL Error: %s\n", alGetString(err));
+		dmLogError("OpenAL Error: %s.", alGetString(err));
 	}
 
 	//now we put our data into the openAL buffer and
@@ -177,7 +185,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	/* Check if an error occured, and clean up if so. */
 	err = alGetError();
 	if (err != AL_NO_ERROR) {
-		dmLogError("OpenAL Error: %s\n", alGetString(err));
+		dmLogError("OpenAL Error: %s.", alGetString(err));
 		if (alIsBuffer(buffer)) {
 			alDeleteBuffers(1, &buffer);
 		}
@@ -249,7 +257,7 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 	/* Check if an error occured, and clean up if so. */
 	err = alGetError();
 	if (err != AL_NO_ERROR) {
-		dmLogError("OpenAL Error: %s\n", alGetString(err));
+		dmLogError("OpenAL Error: %s.", alGetString(err));
 		if (alIsBuffer(buffer)) {
 			alDeleteBuffers(1, &buffer);
 		}
@@ -267,6 +275,7 @@ OpenAL::OpenAL() :
 	is_suspended(false) {
 	sources.reserve(128);
 	suspended_sources.reserve(128);
+	init();
 }
 
 OpenAL* OpenAL::getInstance() {
@@ -280,13 +289,14 @@ bool OpenAL::init() {
 	if (!is_initialized && is_initializable) {
 		device = alcOpenDevice(NULL);
 		if (!device) {
-			dmLogError("Failed to open audio device.\n");
+			dmLogError("Failed to open audio device.");
 			return 1;
 		}
 		context = alcCreateContext(device, NULL);
 		alcMakeContextCurrent(context);
+		check_error("alcMakeContextCurrent");
 		if (!context) {
-			dmLogError("Failed to make audio context.\n");
+			dmLogError("Failed to make audio context.");
 			return false;
 		}
 		is_initialized = true;
@@ -357,16 +367,24 @@ ALuint OpenAL::newSource(dmBuffer::HBuffer* sourceBuffer) {
 	}
 
 	// Create the source to play the sound with.
+	check_error("clear");
 	ALuint source = 0;
 	alGenSources(1, &source);
+	check_error("alGenSources");
 	alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE); // Positioned audio by default.
+	check_error("alSourcei AL_SOURCE_RELATIVE");
 	alSourcei(source, AL_BUFFER, buffer);
+	check_error("alSourcei AL_BUFFER");
 	sources.push_back(source);
 	if (alGetError() == AL_NO_ERROR) {
 		alSource3f(source, AL_POSITION, 0., 0., 0.);
+		check_error("alSource3f AL_POSITION");
 		alSource3f(source, AL_VELOCITY, 0., 0., 0.);
+		check_error("alSource3f AL_VELOCITY");
 		alSourcef(source, AL_REFERENCE_DISTANCE, 50.);
+		check_error("alSource3f AL_REFERENCE_DISTANCE");
 		alSourcef(source, AL_MAX_DISTANCE, 1000.);
+		check_error("alSource3f AL_MAX_DISTANCE");
 	}
 	return source;
 }

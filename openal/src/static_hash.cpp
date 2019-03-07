@@ -5,6 +5,6 @@ unsigned int hash_string(const char *str) {
 
     for (i = 0; str[i]; ++i) {
         hash = 65599 * hash + str[i];
-	}
+    }
     return hash ^ (hash >> 16);
 }

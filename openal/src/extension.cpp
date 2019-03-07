@@ -156,8 +156,7 @@ dmExtension::Result AppInitializeOpenAL(dmExtension::AppParams* params) {
 
 dmExtension::Result InitializeOpenAL(dmExtension::Params* params) {
 	LuaInit(params->m_L);
-	bool result = OpenAL::getInstance()->init();
-	return result ? dmExtension::RESULT_OK : dmExtension::RESULT_INIT_ERROR;
+	return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result AppFinalizeOpenAL(dmExtension::AppParams* params) {

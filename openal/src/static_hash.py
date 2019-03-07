@@ -21,7 +21,7 @@ def string_hash(string):
 	return str(h ^ (h >> 16))
 
 def generateEnum():
-	enum = ['enum HASH_STRINGS {']
+	enum = ['enum HASH_STRINGS : unsigned int {']
 	for string in strings:
 		enum.append('\tHASH_' + string + ' = ' + string_hash(string) + 'u,')
 	last_line = enum[len(enum) - 1]
