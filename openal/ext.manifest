@@ -9,10 +9,10 @@ platforms:
             flags:      ["-std=c++11"]
     x86-win32:
         context:
-            flags:      ["-std=c++11"]
+            flags:      ["-std=c++14"]
     x86_64-win32:
         context:
-            flags:      ["-std=c++11"]
+            flags:      ["-std=c++14"]
     js-web:
         context:
             flags:      ["-std=c++11"]
