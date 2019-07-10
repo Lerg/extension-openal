@@ -9,7 +9,7 @@
 #include <algorithm>
 
 #ifndef M_PI
-	#define M_PI           3.14159265358979323846
+	#define M_PI 3.14159265358979323846
 #endif
 
 #include "AL/al.h"
@@ -34,17 +34,17 @@ private:
 	~OpenAL();
 	OpenAL(OpenAL const&);
 	void operator=(OpenAL const&);
-	static OpenAL* instance;
+	static OpenAL *instance;
 	bool is_initializable;
 	bool is_initialized;
 	bool is_suspended;
-	ALCdevice* device;
-	ALCcontext* context;
+	ALCdevice *device;
+	ALCcontext *context;
 	std::vector<ALuint> sources, suspended_sources;
 public:
-	static OpenAL* getInstance();
+	static OpenAL *getInstance();
 	bool init();
-	void setDistanceModel(const char* model);
+	void setDistanceModel(const char *model);
 	float getDopplerFactor();
 	void setDopplerFactor(float dopplerFactor);
 	float getSpeedOfSound();
@@ -52,9 +52,9 @@ public:
 	void setListenerPosition(float x, float y, float z);
 	void setListenerVelocity(float x, float y, float z);
 	void setListenerOrientation(float atx, float aty, float atz, float upx, float upy, float upz);
-	ALuint newSource(dmBuffer::HBuffer* sourceBuffer);
-	void getSourceDefaults(ALuint source, float* gain, float* max_distance, float* rolloff_factor, float* reference_distance, float* min_gain, float* max_gain, float* cone_outer_gain, float* cone_inner_angle, float* cone_outer_angle, float* dx, float* dy, float* dz);
-	const char* getSourceState(ALuint source);
+	ALuint newSource(dmBuffer::HBuffer *sourceBuffer);
+	void getSourceDefaults(ALuint source, float *gain, float *max_distance, float *rolloff_factor, float *reference_distance, float *min_gain, float *max_gain, float *cone_outer_gain, float *cone_inner_angle, float *cone_outer_angle, float *dx, float *dy, float *dz);
+	const char *getSourceState(ALuint source);
 	void setSourcePosition(ALuint source, float x, float y, float z);
 	void setSourceVelocity(ALuint source, float x, float y, float z);
 	void setSourceDirection(ALuint source, float x, float y, float z);

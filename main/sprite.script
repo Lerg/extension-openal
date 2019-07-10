@@ -1,66 +1,66 @@
 function init(self)
 	local info = openal.get_info()
-	print("OpenAL info:")
-	print("Vendor:", info.vendor)
-	print("Version:", info.version)
-	print("Renderer:", info.renderer)
-	print("Extensions:", info.extensions)
+	print('OpenAL info:')
+	print('Vendor:', info.vendor)
+	print('Version:', info.version)
+	print('Renderer:', info.renderer)
+	print('Extensions:', info.extensions)
 
 	openal.speed_of_sound = 3300;
-	print("creating sources")
+	print('creating sources')
 	
-	print("loading campfire")
-	local res = resource.load("/sounds/campfire.wav")
-	local pos = go.get("campfire", "position")
-	self.campfireSource = openal.new_source(res)
-	if self.campfireSource then
-		self.campfireSource.x, self.campfireSource.y = pos.x, pos.y
-		self.campfireSource.is_looping = true
-		self.campfireSource:play()
+	print('loading campfire')
+	local res = resource.load('/sounds/campfire.wav')
+	local pos = go.get('campfire', 'position')
+	self.campfire_source = openal.new_source(res)
+	if self.campfire_source then
+		self.campfire_source.x, self.campfire_source.y = pos.x, pos.y
+		self.campfire_source.is_looping = true
+		self.campfire_source:play()
 	end
 	
-	print("loading cat")
-	res = resource.load("/sounds/cat.wav")
-	pos = go.get("cat", "position")
-	self.catSource = openal.new_source(res)
-	if self.catSource then
-		self.catSource.x, self.catSource.y = pos.x, pos.y
-		self.catSource.is_looping = true
-		self.catSource:play()
+	print('loading cat')
+	res = resource.load('/sounds/cat.wav')
+	pos = go.get('cat', 'position')
+	self.cat_source = openal.new_source(res)
+	if self.cat_source then
+		self.cat_source.x, self.cat_source.y = pos.x, pos.y
+		self.cat_source.is_looping = true
+		self.cat_source:play()
 	end
 	
-	print("loading waterfall")
-	res = resource.load("/sounds/waterfall.wav")
-	pos = go.get("waterfall", "position")
-	self.waterfallSource = openal.new_source(res)
-	if self.waterfallSource then
-		self.waterfallSource.x, self.waterfallSource.y = pos.x, pos.y
-		self.waterfallSource.is_looping = true
-		self.waterfallSource:play()
+	print('loading waterfall')
+	res = resource.load('/sounds/waterfall.wav')
+	pos = go.get('waterfall', 'position')
+	self.waterfall_source = openal.new_source(res)
+	if self.waterfall_source then
+		self.waterfall_source.x, self.waterfall_source.y = pos.x, pos.y
+		self.waterfall_source.is_looping = true
+		self.waterfall_source:play()
 	end
 	
-	msg.post(".", "acquire_input_focus")
+	msg.post('.', 'acquire_input_focus')
 end
 
 function final(self)
 	openal.remove_source(self.campfireSource)
-	openal.remove_source(self.catSource)
-	openal.remove_source(self.waterfallSource)
+	openal.remove_source(self.cat_source)
+	openal.remove_source(self.waterfall_source)
 end
 
 function update(self, dt)
 	local speed = 10
 	local pos = go.get_position()
-	if self.moveLeft then
+	if self.move_left then
 		pos.x = pos.x - speed
 	end
-	if self.moveRight then
+	if self.move_right then
 		pos.x = pos.x + speed
 	end
-	if self.moveDown then
+	if self.move_down then
 		pos.y = pos.y - speed
 	end
-	if self.moveUp then
+	if self.move_up then
 		pos.y = pos.y + speed
 	end
 	go.set_position(pos)
@@ -68,29 +68,29 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-	if action_id == hash("left") then
+	if action_id == hash('left') then
 		if action.pressed then
-			self.moveLeft = true
+			self.move_left = true
 		elseif action.released then
-			self.moveLeft = false
+			self.move_left = false
 		end
-	elseif action_id == hash("right") then
+	elseif action_id == hash('right') then
 		if action.pressed then
-			self.moveRight = true
+			self.move_right = true
 		elseif action.released then
-			self.moveRight = false
+			self.move_right = false
 		end
-	elseif action_id == hash("down") then
+	elseif action_id == hash('down') then
 		if action.pressed then
-			self.moveDown = true
+			self.move_down = true
 		elseif action.released then
-			self.moveDown = false
+			self.move_down = false
 		end
-	elseif action_id == hash("up") then
+	elseif action_id == hash('up') then
 		if action.pressed then
-			self.moveUp = true
+			self.move_up = true
 		elseif action.released then
-			self.moveUp = false
+			self.move_up = false
 		end
 	end
 end

@@ -17,51 +17,51 @@
 #include "LuaListener.h"
 #include "LuaSource.h"
 
-static int extension_get_info(lua_State* L) {
-	const char* al_vendor = alGetString(AL_VENDOR);
-	const char* al_version = alGetString(AL_VERSION);
-	const char* al_renderer = alGetString(AL_RENDERER);
-	const char* al_extensions = alGetString(AL_EXTENSIONS);
+static int extension_get_info(lua_State *L) {
+	const char *al_vendor = alGetString(AL_VENDOR);
+	const char *al_version = alGetString(AL_VERSION);
+	const char *al_renderer = alGetString(AL_RENDERER);
+	const char *al_extensions = alGetString(AL_EXTENSIONS);
 
 	lua_createtable(L, 0, 4);
 
 	lua_pushstring(L, al_vendor);
-    lua_setfield(L, -2, "vendor");
+	lua_setfield(L, -2, "vendor");
 
 	lua_pushstring(L, al_version);
-    lua_setfield(L, -2, "version");
+	lua_setfield(L, -2, "version");
 
 	lua_pushstring(L, al_renderer);
-    lua_setfield(L, -2, "renderer");
+	lua_setfield(L, -2, "renderer");
 
 	lua_pushstring(L, al_extensions);
-    lua_setfield(L, -2, "extensions");
+	lua_setfield(L, -2, "extensions");
 
 	return 1;
 }
 
-static int extension_set_distance_model(lua_State* L) {
+static int extension_set_distance_model(lua_State *L) {
 	checkArgCount(L, 1);
 	checkString(L, 1);
 	OpenAL::getInstance()->setDistanceModel(lua_tostring(L, 1));
 	return 0;
 }
 
-static int extension_new_source(lua_State* L) {
+static int extension_new_source(lua_State *L) {
 	checkArgCount(L, 1);
 	checkBuffer(L, 1);
-	dmScript::LuaHBuffer* sourceLuaBuffer = dmScript::CheckBuffer(L, 1);
+	dmScript::LuaHBuffer *sourceLuaBuffer = dmScript::CheckBuffer(L, 1);
 	ALuint source = OpenAL::getInstance()->newSource(&sourceLuaBuffer->m_Buffer);
 	if (source == 0) {
 		lua_pushnil(L);
 	} else {
-		LuaSource* luaSource = new LuaSource(source);
+		LuaSource *luaSource = new LuaSource(source);
 		luaSource->push(L);
 	}
 	return 1;
 }
 
-static int extension_remove_source(lua_State* L) {
+static int extension_remove_source(lua_State *L) {
 	checkArgCount(L, 1);
 	// Ignore nil sources, might not be created at all.
 	if (lua_isnil(L, 1)) {
@@ -74,7 +74,7 @@ static int extension_remove_source(lua_State* L) {
 	if (lua_type(L, -1) != LUA_TLIGHTUSERDATA) {
 		return 0;
 	}
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	// remove source.__userdata
@@ -85,8 +85,8 @@ static int extension_remove_source(lua_State* L) {
 	return 0;
 }
 
-int extension_index(lua_State* L) {
-	const char* key = lua_tostring(L, 2);
+int extension_index(lua_State *L) {
+	const char *key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
 		case HASH_doppler_factor:
 			lua_pushnumber(L, OpenAL::getInstance()->getDopplerFactor());
@@ -98,8 +98,8 @@ int extension_index(lua_State* L) {
 	return 1;
 }
 
-int extension_newindex(lua_State* L) {
-	const char* key = lua_tostring(L, 2);
+int extension_newindex(lua_State *L) {
+	const char *key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
 		case HASH_doppler_factor: {
@@ -130,7 +130,7 @@ static const luaL_reg Module_methods[] = {
 	{0, 0}
 };
 
-static void LuaInit(lua_State* L) {
+static void LuaInit(lua_State *L) {
 	int top = lua_gettop(L);
 	luaL_register(L, MODULE_NAME, Module_methods);
 
@@ -150,20 +150,20 @@ static void LuaInit(lua_State* L) {
 	assert(top == lua_gettop(L));
 }
 
-dmExtension::Result AppInitializeOpenAL(dmExtension::AppParams* params) {
+dmExtension::Result AppInitializeOpenAL(dmExtension::AppParams *params) {
 	return dmExtension::RESULT_OK;
 }
 
-dmExtension::Result InitializeOpenAL(dmExtension::Params* params) {
+dmExtension::Result InitializeOpenAL(dmExtension::Params *params) {
 	LuaInit(params->m_L);
 	return dmExtension::RESULT_OK;
 }
 
-dmExtension::Result AppFinalizeOpenAL(dmExtension::AppParams* params) {
+dmExtension::Result AppFinalizeOpenAL(dmExtension::AppParams *params) {
 	return dmExtension::RESULT_OK;
 }
 
-void OnEventOpenAL(dmExtension::Params* params, const dmExtension::Event* event) {
+void OnEventOpenAL(dmExtension::Params *params, const dmExtension::Event *event) {
 	switch (event->m_Event) {
 		case dmExtension::EVENT_ID_ACTIVATEAPP:
 			OpenAL::getInstance()->resume();
@@ -174,7 +174,7 @@ void OnEventOpenAL(dmExtension::Params* params, const dmExtension::Event* event)
 	}
 }
 
-dmExtension::Result FinalizeOpenAL(dmExtension::Params* params) {
+dmExtension::Result FinalizeOpenAL(dmExtension::Params *params) {
 	OpenAL::getInstance()->close();
 	return dmExtension::RESULT_OK;
 }

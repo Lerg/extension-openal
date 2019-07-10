@@ -2,8 +2,8 @@ local max_speed = 500
 local direction = 1
 
 function init(self)
-	print("loading car")
-	local res = resource.load("/sounds/car.wav")
+	print('loading car')
+	local res = resource.load('/sounds/car.wav')
 	local pos = go.get_position()
 	self.source = openal.new_source(res)
 	if self.source then
@@ -16,7 +16,7 @@ function init(self)
 end
 
 function update(self, dt)
-	local velocity = go.get("#collisionobject", "linear_velocity")
+	local velocity = go.get('#collisionobject', 'linear_velocity')
 	local pos = go.get_position()
 	local speed = vmath.length(velocity)
 	if self.source then
@@ -27,7 +27,7 @@ function update(self, dt)
 	if speed > max_speed then
 		direction = -direction
 	end
-	msg.post("#collisionobject", "apply_force", {force = vmath.vector3(direction * 100, 0, 0), position = go.get_world_position()})
+	msg.post('#collisionobject', 'apply_force', {force = vmath.vector3(direction * 100, 0, 0), position = go.get_world_position()})
 end
 
 function final(self)

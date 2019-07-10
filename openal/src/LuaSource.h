@@ -27,16 +27,16 @@ private:
 	float cone_inner_angle;
 	float cone_outer_angle;
 	bool is_relative;
-	static int index(lua_State* L);
-	static int newindex(lua_State* L);
-	static int play(lua_State* L);
-	static int pause(lua_State* L);
-	static int rewind(lua_State* L);
-	static int stop(lua_State* L);
+	static int index(lua_State *L);
+	static int newindex(lua_State *L);
+	static int play(lua_State *L);
+	static int pause(lua_State *L);
+	static int rewind(lua_State *L);
+	static int stop(lua_State *L);
 
 public:
 	LuaSource(ALuint source);
-	void push(lua_State* L);
+	void push(lua_State *L);
 	~LuaSource();
 };
 

@@ -9,7 +9,7 @@ private:
 	~LuaListener();
 	LuaListener(LuaListener const&);
 	void operator=(LuaListener const&);
-	static LuaListener* instance;
+	static LuaListener *instance;
 	float x;
 	float y;
 	float z;
@@ -22,11 +22,11 @@ private:
 	float upx;
 	float upy;
 	float upz;
-	static int index(lua_State* L);
-	static int newindex(lua_State* L);
+	static int index(lua_State *L);
+	static int newindex(lua_State *L);
 public:
-	static LuaListener* getInstance(void);
-	void push(lua_State* L);
+	static LuaListener *getInstance(void);
+	void push(lua_State *L);
 };
 
 #endif

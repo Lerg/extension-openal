@@ -1,23 +1,23 @@
 #include "LuaListener.h"
 
-LuaListener* LuaListener::instance = NULL;
+LuaListener *LuaListener::instance = NULL;
 
 LuaListener::LuaListener(void) :
 	x(0), y(0), z(0),
 	vx(0), vy(0), vz(0) {
 }
 
-LuaListener* LuaListener::getInstance(void) {
+LuaListener *LuaListener::getInstance(void) {
 	if (!instance) {
 		instance = new LuaListener();
 	}
 	return instance;
 }
 
-int LuaListener::index(lua_State* L) {
-	LuaListener* luaListener = LuaListener::getInstance();
+int LuaListener::index(lua_State *L) {
+	LuaListener *luaListener = LuaListener::getInstance();
 
-	const char* key = lua_tostring(L, 2);
+	const char *key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
 		case HASH_x:
 			lua_pushnumber(L, luaListener->x);
@@ -59,10 +59,10 @@ int LuaListener::index(lua_State* L) {
 	return 1;
 }
 
-int LuaListener::newindex(lua_State* L) {
-	LuaListener* luaListener = LuaListener::getInstance();
+int LuaListener::newindex(lua_State *L) {
+	LuaListener *luaListener = LuaListener::getInstance();
 
-	const char* key = lua_tostring(L, 2);
+	const char *key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
 		case HASH_x:
@@ -132,7 +132,7 @@ int LuaListener::newindex(lua_State* L) {
 	return 0;
 }
 
-void LuaListener::push(lua_State* L) {
+void LuaListener::push(lua_State *L) {
 	// listener
 	lua_createtable(L, 0, 1);
 

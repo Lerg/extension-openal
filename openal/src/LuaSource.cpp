@@ -10,12 +10,12 @@ LuaSource::LuaSource(ALuint source) :
 	OpenAL::getInstance()->getSourceDefaults(source, &gain, &max_distance, &rolloff_factor, &reference_distance, &min_gain, &max_gain, &cone_outer_gain, &cone_inner_angle, &cone_outer_angle, &dx, &dy, &dz);
 }
 
-int LuaSource::index(lua_State* L) {
+int LuaSource::index(lua_State *L) {
 	lua_getfield(L, 1, "__userdata");
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
-	const char* key = lua_tostring(L, 2);
+	const char *key = lua_tostring(L, 2);
 	switch (hash_string(key)) {
 		case HASH_x:
 			lua_pushnumber(L, luaSource->x);
@@ -96,12 +96,12 @@ int LuaSource::index(lua_State* L) {
 	return 1;
 }
 
-int LuaSource::newindex(lua_State* L) {
+int LuaSource::newindex(lua_State *L) {
 	lua_getfield(L, 1, "__userdata");
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
-	const char* key = lua_tostring(L, 2);
+	const char *key = lua_tostring(L, 2);
 	const int valueIndex = 3;
 	switch (hash_string(key)) {
 		case HASH_x:
@@ -223,7 +223,7 @@ int LuaSource::newindex(lua_State* L) {
 	return 0;
 }
 
-int LuaSource::play(lua_State* L) {
+int LuaSource::play(lua_State *L) {
 	checkArgCount(L, 1);
 	checkTable(L, 1);
 
@@ -231,7 +231,7 @@ int LuaSource::play(lua_State* L) {
 	if (lua_type(L, -1) != LUA_TLIGHTUSERDATA) {
 		return 0;
 	}
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	OpenAL::getInstance()->playSource(luaSource->source);
@@ -239,7 +239,7 @@ int LuaSource::play(lua_State* L) {
 	return 0;
 }
 
-int LuaSource::pause(lua_State* L) {
+int LuaSource::pause(lua_State *L) {
 	checkArgCount(L, 1);
 	checkTable(L, 1);
 
@@ -247,7 +247,7 @@ int LuaSource::pause(lua_State* L) {
 	if (lua_type(L, -1) != LUA_TLIGHTUSERDATA) {
 		return 0;
 	}
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	OpenAL::getInstance()->pauseSource(luaSource->source);
@@ -255,7 +255,7 @@ int LuaSource::pause(lua_State* L) {
 	return 0;
 }
 
-int LuaSource::rewind(lua_State* L) {
+int LuaSource::rewind(lua_State *L) {
 	checkArgCount(L, 1);
 	checkTable(L, 1);
 
@@ -263,7 +263,7 @@ int LuaSource::rewind(lua_State* L) {
 	if (lua_type(L, -1) != LUA_TLIGHTUSERDATA) {
 		return 0;
 	}
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	OpenAL::getInstance()->rewindSource(luaSource->source);
@@ -271,7 +271,7 @@ int LuaSource::rewind(lua_State* L) {
 	return 0;
 }
 
-int LuaSource::stop(lua_State* L) {
+int LuaSource::stop(lua_State *L) {
 	checkArgCount(L, 1);
 	checkTable(L, 1);
 
@@ -279,7 +279,7 @@ int LuaSource::stop(lua_State* L) {
 	if (lua_type(L, -1) != LUA_TLIGHTUSERDATA) {
 		return 0;
 	}
-	LuaSource* luaSource = (LuaSource*)lua_touserdata(L, -1);
+	LuaSource *luaSource = (LuaSource*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	OpenAL::getInstance()->stopSource(luaSource->source);
@@ -287,7 +287,7 @@ int LuaSource::stop(lua_State* L) {
 	return 0;
 }
 
-void LuaSource::push(lua_State* L) {
+void LuaSource::push(lua_State *L) {
 	// source
 	lua_createtable(L, 0, 1);
 	// source.__userdata

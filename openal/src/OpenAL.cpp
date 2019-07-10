@@ -47,8 +47,8 @@ struct WAVE_Data {
 /*
  * Load wave file function. No need for ALUT with this
  */
-static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
-	uint8_t* sourcedata = 0;
+static ALuint loadWavFile(dmBuffer::HBuffer *sourceBuffer) {
+	uint8_t *sourcedata = 0;
 	uint32_t datasize = 0;
 	dmBuffer::GetBytes(*sourceBuffer, (void**)&sourcedata, &datasize);
 
@@ -56,7 +56,7 @@ static ALuint loadWavFile(dmBuffer::HBuffer* sourceBuffer) {
 	WAVE_Format wave_format;
 	RIFF_Header riff_header;
 	WAVE_Data wave_data;
-	unsigned char* data;
+	unsigned char *data;
 
 	int cursor = 0;
 	// Read in the first chunk into the struct
@@ -207,7 +207,7 @@ static void ApplySin(ALfloat *data, ALdouble g, ALuint srate, ALuint freq) {
 	ALdouble smps_per_cycle = (ALdouble)srate / freq;
 	ALuint i;
 	for (i = 0;i < srate;i++) {
-		data[i] += (ALfloat)(sin(i/smps_per_cycle * 2.0*M_PI) * g);
+		data[i] += (ALfloat)(sin(i/smps_per_cycle * 2.0 * M_PI)  *g);
 	}
 }
 
@@ -217,7 +217,7 @@ static void ApplySin(ALfloat *data, ALdouble g, ALuint srate, ALuint freq) {
  // TODO: expose creating synths
 static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 	ALint data_size;
-	ALfloat* data;
+	ALfloat *data;
 	ALuint buffer;
 	ALenum err;
 	ALuint i;
@@ -267,7 +267,7 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 	return buffer;
 }
 
-OpenAL* OpenAL::instance = NULL;
+OpenAL *OpenAL::instance = NULL;
 
 OpenAL::OpenAL() :
 	is_initializable(SHOULD_INITIALIZE_OPENAL),
@@ -278,7 +278,7 @@ OpenAL::OpenAL() :
 	init();
 }
 
-OpenAL* OpenAL::getInstance() {
+OpenAL *OpenAL::getInstance() {
 	if (!instance) {
 		instance = new OpenAL();
 	}
@@ -299,12 +299,13 @@ bool OpenAL::init() {
 			dmLogError("Failed to make audio context.");
 			return false;
 		}
+		setListenerOrientation(0.0, 0.0, 1.0, 0.0, 0.0, 1.0);
 		is_initialized = true;
 	}
 	return true;
 }
 
-void OpenAL::setDistanceModel(const char* model) {
+void OpenAL::setDistanceModel(const char *model) {
 	switch (hash_string(model)) {
 		case HASH_inverse:
 			alDistanceModel(AL_INVERSE_DISTANCE);
@@ -359,7 +360,7 @@ void OpenAL::setListenerOrientation(float atx, float aty, float atz, float upx, 
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 
-ALuint OpenAL::newSource(dmBuffer::HBuffer* sourceBuffer) {
+ALuint OpenAL::newSource(dmBuffer::HBuffer *sourceBuffer) {
 	// Load the sound into a buffer.
 	ALuint buffer = loadWavFile(sourceBuffer);
 	if (buffer == 0) {
@@ -389,7 +390,7 @@ ALuint OpenAL::newSource(dmBuffer::HBuffer* sourceBuffer) {
 	return source;
 }
 
-void OpenAL::getSourceDefaults(ALuint source, float* gain, float* max_distance, float* rolloff_factor, float* reference_distance, float* min_gain, float* max_gain, float* cone_outer_gain, float* cone_inner_angle, float* cone_outer_angle, float* dx, float* dy, float* dz) {
+void OpenAL::getSourceDefaults(ALuint source, float *gain, float *max_distance, float *rolloff_factor, float *reference_distance, float *min_gain, float *max_gain, float *cone_outer_gain, float *cone_inner_angle, float *cone_outer_angle, float *dx, float *dy, float *dz) {
 	alGetSourcef(source, AL_GAIN, gain);
 	alGetSourcef(source, AL_MAX_DISTANCE, max_distance);
 	alGetSourcef(source, AL_ROLLOFF_FACTOR, rolloff_factor);
@@ -407,7 +408,7 @@ void OpenAL::getSourceDefaults(ALuint source, float* gain, float* max_distance, 
 	alGetSource3f(source, AL_DIRECTION, dx, dy, dz);
 }
 
-const char* OpenAL::getSourceState(ALuint source) {
+const char *OpenAL::getSourceState(ALuint source) {
 	ALenum state = 0;
 	alGetSourcei(source, AL_SOURCE_STATE, &state);
 	switch (state) {
