@@ -1,3 +1,12 @@
+local source_properties = {'x', 'y', 'z', 'vx', 'vy', 'vz', 'dx', 'dy', 'dz', 'pitch', 'gain', 'max_distance', 'rolloff_factor', 'reference_distance', 'min_gain', 'max_gain', 'cone_outer_gain', 'cone_inner_angle', 'cone_outer_angle', 'is_looping', 'is_relative'}
+
+local function list_properties(source)
+	for i = 1, #source_properties do
+		local p = source_properties[i]
+		print(p, source[p])
+	end
+end
+
 function init(self)
 	local info = openal.get_info()
 	print('OpenAL info:')
@@ -9,7 +18,7 @@ function init(self)
 	openal.speed_of_sound = 3300;
 	print('creating sources')
 	
-	print('loading campfire')
+	--[[print('loading campfire')
 	local res = resource.load('/sounds/campfire.wav')
 	local pos = go.get('campfire', 'position')
 	self.campfire_source = openal.new_source(res)
@@ -17,7 +26,7 @@ function init(self)
 		self.campfire_source.x, self.campfire_source.y = pos.x, pos.y
 		self.campfire_source.is_looping = true
 		self.campfire_source:play()
-	end
+	end]]
 	
 	print('loading cat')
 	res = resource.load('/sounds/cat.wav')
@@ -27,9 +36,10 @@ function init(self)
 		self.cat_source.x, self.cat_source.y = pos.x, pos.y
 		self.cat_source.is_looping = true
 		self.cat_source:play()
+		list_properties(self.cat_source)
 	end
 	
-	print('loading waterfall')
+	--[[print('loading waterfall')
 	res = resource.load('/sounds/waterfall.wav')
 	pos = go.get('waterfall', 'position')
 	self.waterfall_source = openal.new_source(res)
@@ -37,7 +47,7 @@ function init(self)
 		self.waterfall_source.x, self.waterfall_source.y = pos.x, pos.y
 		self.waterfall_source.is_looping = true
 		self.waterfall_source:play()
-	end
+	end]]
 	
 	msg.post('.', 'acquire_input_focus')
 end

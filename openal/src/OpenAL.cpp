@@ -292,13 +292,35 @@ bool OpenAL::init() {
 			dmLogError("Failed to open audio device.");
 			return 1;
 		}
-		context = alcCreateContext(device, NULL);
+		ALCint attrs[] = {
+			ALC_FREQUENCY, 44100,
+			ALC_REFRESH, 80,
+			//ALC_SYNC, 1,
+			ALC_STEREO_SOURCES, 4,
+			ALC_MONO_SOURCES, 8,
+			ALC_INVALID, ALC_INVALID
+		};
+		context = alcCreateContext(device, attrs);
 		alcMakeContextCurrent(context);
 		check_error("alcMakeContextCurrent");
 		if (!context) {
 			dmLogError("Failed to make audio context.");
 			return false;
 		}
+
+		char *s = (char *)alcGetString(device, ALC_DEFAULT_DEVICE_SPECIFIER);
+  		printf("default output device: %s\n", s);
+		check_error("d");
+
+		ALCint data[16];
+		alcGetIntegerv(device, ALC_FREQUENCY, 1, data);
+		printf("mixer frequency: %u hz\n", data[0]);
+		check_error("d");
+
+		alcGetIntegerv(device, ALC_REFRESH, 1, data+1);
+		printf("refresh rate : %u hz %d\n", data[0]/data[1], data[1]);
+		check_error("d");
+
 		setListenerOrientation(0.0, 0.0, 1.0, 0.0, 0.0, 1.0);
 		is_initialized = true;
 	}
@@ -372,18 +394,22 @@ ALuint OpenAL::newSource(dmBuffer::HBuffer *sourceBuffer) {
 	ALuint source = 0;
 	alGenSources(1, &source);
 	check_error("alGenSources");
-	alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE); // Positioned audio by default.
-	check_error("alSourcei AL_SOURCE_RELATIVE");
 	alSourcei(source, AL_BUFFER, buffer);
 	check_error("alSourcei AL_BUFFER");
 	sources.push_back(source);
 	if (alGetError() == AL_NO_ERROR) {
+		alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE); // Positioned audio by default.
+		check_error("alSourcei AL_SOURCE_RELATIVE");
 		alSource3f(source, AL_POSITION, 0., 0., 0.);
 		check_error("alSource3f AL_POSITION");
 		alSource3f(source, AL_VELOCITY, 0., 0., 0.);
 		check_error("alSource3f AL_VELOCITY");
+		alSource3f(source, AL_DIRECTION, 0., 0., 0.);
+		check_error("alSource3f AL_DIRECTION");
 		alSourcef(source, AL_REFERENCE_DISTANCE, 50.);
 		check_error("alSource3f AL_REFERENCE_DISTANCE");
+		alSourcef(source, AL_ROLLOFF_FACTOR, 0.);
+		check_error("alSource3f AL_ROLLOFF_FACTOR");
 		alSourcef(source, AL_MAX_DISTANCE, 1000.);
 		check_error("alSource3f AL_MAX_DISTANCE");
 	}
