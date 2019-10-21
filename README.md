@@ -19,6 +19,8 @@ https://github.com/Lerg/extension-openal/archive/master.zip
 
 Add WAV files as resources (specify resources directory in `game.project`).
 
+Disable Defold’s sound system by using `sound_null.appmanifest` in the `game.project` file under Native Extensions -> App Manifest.
+
 ## Properties
 ### `openal.doppler_factor`
 
