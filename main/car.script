@@ -11,7 +11,7 @@ function init(self)
 		self.source.is_looping = true
 		self.source:play()
 	else
-		print('nil')
+		print('car source failed')
 	end
 end
 
@@ -31,5 +31,7 @@ function update(self, dt)
 end
 
 function final(self)
-	openal.remove_source(self.source)
+	if self.source then
+		openal.remove_source(self.source)
+	end
 end

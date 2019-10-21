@@ -186,7 +186,7 @@ embedded_instances {
   id: "logo"
   data: "components {\n"
   "  id: \"script\"\n"
-  "  component: \"/main/sprite.script\"\n"
+  "  component: \"/main/logo.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

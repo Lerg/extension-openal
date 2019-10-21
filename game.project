@@ -1,5 +1,5 @@
 [project]
-title = My project
+title = Defold OpenAL
 version = 0.1
 custom_resources = sounds/
 
@@ -22,4 +22,10 @@ shared_state = 1
 
 [library]
 include_dirs = openal
+
+[native_extension]
+app_manifest = /openal/manifests/sound_null.appmanifest
+
+[ios]
+bundle_identifier = com.spiralcodestudio.test1
 

@@ -17,6 +17,12 @@
 #include "LuaListener.h"
 #include "LuaSource.h"
 
+static int extension_init(lua_State *L) {
+	checkArgCount(L, 0);
+	OpenAL::getInstance()->init();
+	return 0;
+}
+
 static int extension_get_info(lua_State *L) {
 	const char *al_vendor = alGetString(AL_VENDOR);
 	const char *al_version = alGetString(AL_VERSION);
@@ -123,6 +129,7 @@ int extension_newindex(lua_State *L) {
 }
 
 static const luaL_reg Module_methods[] = {
+	{"init", extension_init},
 	{"get_info", extension_get_info},
 	{"set_distance_model", extension_set_distance_model},
 	{"new_source", extension_new_source},

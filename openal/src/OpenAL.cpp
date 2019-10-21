@@ -270,7 +270,6 @@ static ALuint CreateWave(enum WaveType type, ALuint freq, ALuint srate) {
 OpenAL *OpenAL::instance = NULL;
 
 OpenAL::OpenAL() :
-	is_initializable(SHOULD_INITIALIZE_OPENAL),
 	is_initialized(false),
 	is_suspended(false) {
 	sources.reserve(128);
@@ -286,7 +285,7 @@ OpenAL *OpenAL::getInstance() {
 }
 
 bool OpenAL::init() {
-	if (!is_initialized && is_initializable) {
+	if (!is_initialized) {
 		device = alcOpenDevice(NULL);
 		if (!device) {
 			dmLogError("Failed to open audio device.");
@@ -525,7 +524,7 @@ void OpenAL::removeSource(ALuint source) {
 }
 
 void OpenAL::suspend() {
-	if (!is_suspended && is_initializable) {
+	if (!is_suspended) {
 		for (std::vector<ALuint>::iterator i = sources.begin(); i != sources.end(); ++i) {
 			ALenum state = 0;
 			alGetSourcei(*i, AL_SOURCE_STATE, &state);

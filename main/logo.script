@@ -17,6 +17,8 @@ function init(self)
 		self.campfire_source.x, self.campfire_source.y = pos.x, pos.y
 		self.campfire_source.is_looping = true
 		self.campfire_source:play()
+	else
+		print('campfire failed')
 	end
 	
 	print('loading cat')
@@ -27,6 +29,8 @@ function init(self)
 		self.cat_source.x, self.cat_source.y = pos.x, pos.y
 		self.cat_source.is_looping = true
 		self.cat_source:play()
+	else
+		print('cat failed')
 	end
 	
 	print('loading waterfall')
@@ -37,15 +41,23 @@ function init(self)
 		self.waterfall_source.x, self.waterfall_source.y = pos.x, pos.y
 		self.waterfall_source.is_looping = true
 		self.waterfall_source:play()
+	else
+		print('waterfall failed')
 	end
 	
 	msg.post('.', 'acquire_input_focus')
 end
 
 function final(self)
-	openal.remove_source(self.campfireSource)
-	openal.remove_source(self.cat_source)
-	openal.remove_source(self.waterfall_source)
+	if self.campfire_source then
+		openal.remove_source(self.campfire_source)
+	end
+	if self.cat_source then
+		openal.remove_source(self.cat_source)
+	end
+	if self.waterfall_source then
+		openal.remove_source(self.waterfall_source)
+	end
 end
 
 function update(self, dt)
@@ -64,7 +76,9 @@ function update(self, dt)
 		pos.y = pos.y + speed
 	end
 	go.set_position(pos)
-	openal.listener.x, openal.listener.y = pos.x, pos.y
+	if self.openal_is_ready then
+		openal.listener.x, openal.listener.y = pos.x, pos.y
+	end
 end
 
 function on_input(self, action_id, action)

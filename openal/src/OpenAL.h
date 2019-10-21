@@ -22,12 +22,6 @@
 #include "LuaUtils.h"
 #include "static_hash.h"
 
-#if defined(DM_PLATFORM_OSX) || defined(DM_PLATFORM_WINDOWS) || defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_HTML5)
-	#define SHOULD_INITIALIZE_OPENAL true
-#else
-	#define SHOULD_INITIALIZE_OPENAL false
-#endif
-
 class OpenAL {
 private:
 	OpenAL();
@@ -35,7 +29,6 @@ private:
 	OpenAL(OpenAL const&);
 	void operator=(OpenAL const&);
 	static OpenAL *instance;
-	bool is_initializable;
 	bool is_initialized;
 	bool is_suspended;
 	ALCdevice *device;
