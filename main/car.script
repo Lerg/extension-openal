@@ -9,7 +9,6 @@ function init(self)
 	if self.source then
 		self.source.x, self.source.y = pos.x, pos.y
 		self.source.is_looping = true
-		self.source:play()
 	else
 		print('car source failed')
 	end
@@ -28,6 +27,12 @@ function update(self, dt)
 		direction = -direction
 	end
 	msg.post('#collisionobject', 'apply_force', {force = vmath.vector3(direction * 100, 0, 0), position = go.get_world_position()})
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash('ok_to_play') then
+		self.source:play()
+	end
 end
 
 function final(self)

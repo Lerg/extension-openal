@@ -1,0 +1,21 @@
+local function send_ok_to_play()
+	local msg_id = hash('ok_to_play')
+	msg.post('/car#script', msg_id)
+	msg.post('/logo#script', msg_id)
+end
+
+-- On HTML5 we have to wait for a user click to start playing sounds.
+function init(self)
+	if sys.get_sys_info().system_name == 'HTML5' then
+		msg.post('.', hash('acquire_input_focus'))
+	else
+		send_ok_to_play()
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash('button_left') and not self.has_touched then
+		self.has_touched = true
+		send_ok_to_play()
+	end
+end

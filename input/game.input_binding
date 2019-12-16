@@ -14,3 +14,7 @@ key_trigger {
   input: KEY_W
   action: "up"
 }
+mouse_trigger {
+  input: MOUSE_BUTTON_LEFT
+  action: "button_left"
+}

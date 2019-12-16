@@ -16,7 +16,6 @@ function init(self)
 	if self.campfire_source then
 		self.campfire_source.x, self.campfire_source.y = pos.x, pos.y
 		self.campfire_source.is_looping = true
-		self.campfire_source:play()
 	else
 		print('campfire failed')
 	end
@@ -28,7 +27,6 @@ function init(self)
 	if self.cat_source then
 		self.cat_source.x, self.cat_source.y = pos.x, pos.y
 		self.cat_source.is_looping = true
-		self.cat_source:play()
 	else
 		print('cat failed')
 	end
@@ -40,7 +38,6 @@ function init(self)
 	if self.waterfall_source then
 		self.waterfall_source.x, self.waterfall_source.y = pos.x, pos.y
 		self.waterfall_source.is_looping = true
-		self.waterfall_source:play()
 	else
 		print('waterfall failed')
 	end
@@ -78,6 +75,14 @@ function update(self, dt)
 	go.set_position(pos)
 	if self.openal_is_ready then
 		openal.listener.x, openal.listener.y = pos.x, pos.y
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash('ok_to_play') then
+		self.campfire_source:play()
+		self.cat_source:play()
+		self.waterfall_source:play()
 	end
 end
 
