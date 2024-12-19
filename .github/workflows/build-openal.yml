@@ -20,6 +20,7 @@ jobs:
               os: windows-latest,
               cmake_opts: "-A Win32 \
                 -DLIBTYPE=STATIC \
+                -DFORCE_STATIC_VCRT=ON \
                 -DALSOFT_TESTS=ON \
                 -DALSOFT_BUILD_ROUTER=ON \
                 -DALSOFT_REQUIRE_WINMM=ON \
@@ -32,6 +33,7 @@ jobs:
               os: windows-latest,
               cmake_opts: "-A x64 \
                 -DLIBTYPE=STATIC \
+                -DFORCE_STATIC_VCRT=ON \
                 -DALSOFT_TESTS=ON \
                 -DALSOFT_BUILD_ROUTER=ON \
                 -DALSOFT_REQUIRE_WINMM=ON \
@@ -67,4 +69,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: soft_oal-${{matrix.config.name}}
-          path: build
+          path: build/${{matrix.config.build_type}}
