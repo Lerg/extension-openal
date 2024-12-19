@@ -10,9 +10,11 @@ platforms:
     x86-win32:
         context:
             flags:      ["-std=c++14"]
+            libs:       ["winmm", "avrt"]
     x86_64-win32:
         context:
             flags:      ["-std=c++14"]
+            libs:       ["winmm", "avrt"]
     js-web:
         context:
             flags:      ["-std=c++11"]

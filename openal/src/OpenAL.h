@@ -12,6 +12,12 @@
 	#define M_PI 3.14159265358979323846
 #endif
 
+#if defined(DM_PLATFORM_WINDOWS)
+// When the library is built for static linking, apps should define
+// AL_LIBTYPE_STATIC when including the AL headers.
+#define AL_LIBTYPE_STATIC
+#endif
+
 #include "AL/al.h"
 #include "AL/alc.h"
 #include "AL/alext.h"
