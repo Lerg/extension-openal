@@ -17,7 +17,7 @@ jobs:
         config:
           - {
               name: "Win32-Release",
-              os: windows-2022,
+              os: windows-2019,
               cmake_opts: "-A Win32 \
                 -DLIBTYPE=STATIC \
                 -DFORCE_STATIC_VCRT=ON \
@@ -31,7 +31,7 @@ jobs:
             }
           - {
               name: "Win64-Release",
-              os: windows-2022,
+              os: windows-2019,
               cmake_opts: "-A x64 \
                 -DLIBTYPE=STATIC \
                 -DFORCE_STATIC_VCRT=ON \
