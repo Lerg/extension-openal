@@ -1,0 +1,68 @@
+name: CI - Build OpenAL
+
+# Based on the script from https://github.com/kcat/openal-soft/blob/master/.github/workflows/build-openal.yml
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{matrix.config.name}}
+    runs-on: ${{matrix.config.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: "Win32-Release",
+              os: windows-2019,
+              cmake_opts: "-A Win32 \
+                -DLIBTYPE=STATIC \
+                -DFORCE_STATIC_VCRT=ON \
+                -DALSOFT_EXAMPLES=OFF \
+                -DALSOFT_TESTS=OFF \
+                -DALSOFT_UTILS=OFF \
+                -DALSOFT_REQUIRE_WINMM=ON \
+                -DALSOFT_REQUIRE_DSOUND=ON \
+                -DALSOFT_REQUIRE_WASAPI=ON",
+              build_type: "Release"
+            }
+          - {
+              name: "Win64-Release",
+              os: windows-2019,
+              cmake_opts: "-A x64 \
+                -DLIBTYPE=STATIC \
+                -DFORCE_STATIC_VCRT=ON \
+                -DALSOFT_EXAMPLES=OFF \
+                -DALSOFT_TESTS=OFF \
+                -DALSOFT_UTILS=OFF \
+                -DALSOFT_REQUIRE_WINMM=ON \
+                -DALSOFT_REQUIRE_DSOUND=ON \
+                -DALSOFT_REQUIRE_WASAPI=ON",
+              build_type: "Release"
+            }
+
+    steps:
+      - name: Checkout OpenAL Soft
+        uses: actions/checkout@v4
+        with:
+          repository: kcat/openal-soft
+          ref: 1.24.1
+
+      - name: Configure
+        shell: bash
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=${{matrix.config.build_type}} ${{matrix.config.cmake_opts}} .
+
+      - name: Build
+        shell: bash
+        run: |
+          cmake --build build --config ${{matrix.config.build_type}}
+
+      - name: Upload build as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: soft_oal-${{matrix.config.name}}
+          path: build/${{matrix.config.build_type}}
