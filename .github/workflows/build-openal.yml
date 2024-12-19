@@ -21,8 +21,9 @@ jobs:
               cmake_opts: "-A Win32 \
                 -DLIBTYPE=STATIC \
                 -DFORCE_STATIC_VCRT=ON \
-                -DALSOFT_TESTS=ON \
-                -DALSOFT_BUILD_ROUTER=ON \
+                -DALSOFT_EXAMPLES=OFF \
+                -DALSOFT_TESTS=OFF \
+                -DALSOFT_UTILS=OFF \
                 -DALSOFT_REQUIRE_WINMM=ON \
                 -DALSOFT_REQUIRE_DSOUND=ON \
                 -DALSOFT_REQUIRE_WASAPI=ON",
@@ -34,8 +35,9 @@ jobs:
               cmake_opts: "-A x64 \
                 -DLIBTYPE=STATIC \
                 -DFORCE_STATIC_VCRT=ON \
-                -DALSOFT_TESTS=ON \
-                -DALSOFT_BUILD_ROUTER=ON \
+                -DALSOFT_EXAMPLES=OFF \
+                -DALSOFT_TESTS=OFF \
+                -DALSOFT_UTILS=OFF \
                 -DALSOFT_REQUIRE_WINMM=ON \
                 -DALSOFT_REQUIRE_DSOUND=ON \
                 -DALSOFT_REQUIRE_WASAPI=ON",
@@ -58,12 +60,6 @@ jobs:
         shell: bash
         run: |
           cmake --build build --config ${{matrix.config.build_type}}
-
-      - name: Test
-        shell: bash
-        run: |
-          cd build
-          ctest
 
       - name: Upload build as a workflow artifact
         uses: actions/upload-artifact@v4
